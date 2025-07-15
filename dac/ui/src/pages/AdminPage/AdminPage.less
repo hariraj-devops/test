@@ -1,0 +1,124 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less"; // replacement of typography.less with mixins.less changes the output significantly
+//but the change is in better direction. Duplicated styles from typography are not loaded
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .main-content {
+    // Effects all the setting pages
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px;
+    min-width: 800px;
+  }
+
+  #admin-page {
+    // DX-23750. Instead of having the scroll bar on the page-level, move it down to the left-nav and main-content level.
+    .page-content {
+      overflow: hidden;
+      .page-content-inner {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        .user-nav-container {
+          display: flex;
+          height: 100%;
+          overflow: hidden;
+        }
+      }
+    }
+    .left-menu {
+      overflow: auto;
+      .left-item {
+        &:hover {
+          outline: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        &.selected {
+          background-color: rgba(0, 0, 0, 0.05);
+          cursor: default;
+          outline: 0;
+        }
+      }
+    }
+
+    .separator {
+      border-bottom: 1px solid #d6d6d6;
+      clear: both;
+      margin: 5px 0;
+    }
+
+    .fixedDataTableLayout_header {
+      .formLabel();
+      // DX-23708. Fixed the table header/body overlapping issue
+      background-color: var(--fill--primary);
+    }
+
+    .public_fixedDataTableCell_cellContent {
+      padding-left: 0;
+    }
+
+    .public_fixedDataTable_bodyRow {
+      cursor: default;
+
+      .public_fixedDataTableCell_cellContent {
+        // remove padding for body cells
+        padding: 0;
+      }
+
+      // restore vertical alignment after padding remove ---------
+
+      .fixedDataTableCellLayout_wrap1 {
+        height: 100%;
+      }
+
+      .fixedDataTableCellLayout_wrap3 {
+        // restore vertical
+        vertical-align: middle;
+      }
+
+      // ----------------------------------------------------------
+
+      &:hover {
+        background-color: var(--fill--primary--hover);
+        .actions-wrap {
+          opacity: 1;
+        }
+      }
+    }
+
+    .ReactVirtualized__Table__row {
+      &:hover {
+        .actions-wrap {
+          opacity: 1;
+        }
+      }
+    }
+
+    .actions-wrap {
+      opacity: 1;
+
+      > a,
+      button {
+        &:not(:last-child) {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}

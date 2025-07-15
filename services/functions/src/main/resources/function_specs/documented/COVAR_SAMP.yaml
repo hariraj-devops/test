@@ -1,0 +1,80 @@
+
+#
+# Copyright (C) 2017-2019 Dremio Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+description: Returns the sample covariance for non-NULL pairs across all input values.
+functionCategories:
+  - AGGREGATE
+  - WINDOW
+name: COVAR_SAMP
+signatures:
+- description: null
+  parameters:
+  - description: An expression that evaluates to a numeric type. This parameter is
+      the dependent value.
+    kind: REGULAR
+    name: expression1
+    type: NUMERIC
+  - description: An expression that evaluates to a numeric type. This parameter is
+      the independent value.
+    kind: REGULAR
+    name: expression2
+    type: NUMERIC
+  - description: "An optional expression that groups rows into partitions. You can\
+     \ specify a single expression or a comma-separated list of expressions. For\
+     \ example, `PARTITION BY column1, column3, \u2026`."
+    kind: OPTIONAL
+    name: partition_expression
+    type: CHARACTERS
+  - description: "An expression that specifies the order of the rows within each partition.\
+     \ You can specify a single expression or a comma-separated list of expressions.\
+     \ For example, `PARTITION BY column1, column3, \u2026` ORDER BY column3;"
+    kind: OPTIONAL
+    name: order_expression
+    type: CHARACTERS
+  - description: "Can be cumulative ('PARTITION BY column1 ORDER BY column2 RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW')\
+     \ or sliding ('PARTITION BY column1 ORDER BY column2 ROWS BETWEEN ? PRECEDING AND ? FOLLOWING') window frame.\
+     \ In order to use window frames effectively, it's essential to have the data within the window arranged in a specific way.\ 
+     \ Consequently, including the ORDER BY clause inside the OVER clause becomes necessary for proper window frame syntax."
+    kind: OPTIONAL
+    name: window_frame
+    type: CHARACTERS
+  returnType: DOUBLE
+  sampleCodes:
+  - call: 'SELECT COVAR_SAMP(trip_distance_mi, fare_amount)
+
+      FROM Samples."samples.dremio.com"."NYC-taxi-trips"
+
+      '
+    result: 31.70536780565699
+  - call: 'SELECT COVAR_SAMP(DISTINCT trip_distance_mi, fare_amount)
+
+      FROM Samples."samples.dremio.com"."NYC-taxi-trips"
+
+      '
+    result: 31.7053678056971
+  - call: "SELECT COVAR_SAMP(trip_distance_mi, fare_amount)\n  OVER (PARTITION BY trip_distance_mi)\n\
+      FROM Samples.\"samples.dremio.com\".\"NYC-taxi-trips\"\n"
+    result: 2.442515362986122e-15
+  - call: "SELECT COVAR_SAMP(trip_distance_mi, fare_amount)\n  OVER (PARTITION BY trip_distance_mi ORDER\
+      \ BY pickup_datetime RANGE BETWEEN CURRENT ROW  AND UNBOUNDED FOLLOWING)\n\
+      FROM Samples.\"samples.dremio.com\".\"NYC-taxi-trips\"\n"
+    result: "EXPR$0\n0.011553165118073803\n0.011548067948254932\n0.011544544525482535"
+  - call: "SELECT COVAR_SAMP(trip_distance_mi, fare_amount)\n  OVER (PARTITION BY trip_distance_mi ORDER\
+       \ BY pickup_datetime ROWS BETWEEN 1 PRECEDING  AND 2 FOLLOWING)\n\
+     FROM Samples.\"samples.dremio.com\".\"NYC-taxi-trips\"\n"
+    result: "EXPR$0\n0.0\n3.700743415417188E-17\n0.0"

@@ -1,0 +1,150 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use "./helpers";
+@use "./transition";
+
+.bg-background {
+  background: var(--fill--primary);
+  color: var(--text--primary);
+}
+
+.bg-secondary {
+  background: var(--fill--secondary);
+  color: var(--text--primary);
+}
+
+@each $shade in helpers.$shades {
+  @each $grade in helpers.$gradeScale {
+    .bg-#{$shade}-#{$grade} {
+      background-color: var(--color--#{$shade}--#{$grade});
+      @if $grade >= 500 {
+        color: var(--color--neutral--100);
+      } @else {
+        color: var(--color--neutral--800);
+      }
+    }
+  }
+}
+
+@each $grade in helpers.$gradeScale {
+  .bg-brand-#{$grade} {
+    background-color: var(--color--cyan--#{$grade});
+    @if $grade >= 500 {
+      color: var(--color--neutral--100);
+    } @else {
+      color: var(--color--neutral--800);
+    }
+  }
+}
+
+.bg-brand-300 {
+  color: white;
+}
+.bg-brand-400 {
+  color: white;
+}
+
+.bg-danger-50 {
+  background-color: var(--fill--danger);
+  color: black;
+}
+.bg-danger-400 {
+  background-color: var(--fill--danger--solid);
+  color: white;
+}
+
+.bg-warning-50 {
+  background-color: var(--fill--warning);
+  color: black;
+}
+.bg-warning-200 {
+  background-color: var(--fill--warning--solid);
+  color: white;
+}
+
+.bg-success-50 {
+  background-color: var(--fill--success);
+  color: black;
+}
+.bg-success-300 {
+  background-color: var(--fill--success--solid);
+  color: black;
+}
+
+.bg-info-50 {
+  background-color: var(--fill--info);
+  color: black;
+}
+.bg-info-400 {
+  background-color: var(--fill--info--solid);
+  color: black;
+}
+
+.bg-brand-bold {
+  @extend .bg-brand-300;
+}
+.bg-brand-subtle {
+  @extend .bg-brand-25;
+}
+.bg-success-subtle {
+  @extend .bg-success-50;
+}
+.bg-success-bold {
+  @extend .bg-success-300;
+}
+.bg-danger-subtle {
+  @extend .bg-danger-50;
+}
+.bg-danger-bold {
+  @extend .bg-danger-400;
+}
+.bg-info-subtle {
+  @extend .bg-info-50;
+}
+.bg-info-bold {
+  @extend .bg-info-400;
+}
+.bg-warning-subtle {
+  @extend .bg-warning-50;
+}
+.bg-warning-bold {
+  @extend .bg-warning-200;
+}
+
+.bg-danger-subtle-border {
+  @extend .bg-danger-subtle;
+  color: var(--fill--danger--solid);
+  border: 1px solid var(--fill--danger--solid);
+}
+
+.bg-none {
+  background: none;
+}
+
+.hover\:bg-brand-subtle:hover {
+  @extend .bg-brand-subtle;
+  @extend .transition-medium;
+  transition-property: background;
+}
+
+//@deprecated -- don't @extend this in ui-lib
+.bg-disabled {
+  background: var(--fill--disabled) !important;
+  color: var(--text--disabled);
+  --bg: var(--fill--disabled);
+  --text--hovered: var(--text--disabled);
+}

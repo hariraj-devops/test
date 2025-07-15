@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.dremio.contrib</groupId>
+    <artifactId>dremio-contrib-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>dremio-hive2-exec-shaded</artifactId>
+  <packaging>jar</packaging>
+  <name>Contrib - Shaded Hive 2 JAR</name>
+
+  <properties>
+    <!-- No need to verify Hive classes (this will fail) -->
+    <forbiddenapis.skip>true</forbiddenapis.skip>
+    <hive.version>${plugin.hive2.hive.version}</hive.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-ant</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-web</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hive</groupId>
+          <artifactId>hive-llap-tez</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-yarn-registry</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.calcite</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.calcite.avatica</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.pentaho</groupId>
+          <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Overwrite thrift version packaged with hive-exec -->
+    <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
+      <version>0.9.3-2dremio</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+    </dependency>
+    <!-- Overwrite protobuf version packaged with hive-exec -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws.glue</groupId>
+      <artifactId>aws-glue-datacatalog-hive2-client</artifactId>
+      <version>${plugin.hive2.aws.glue.version}</version>
+      <exclusions>
+        <exclusion>
+          <!-- The JAR is shading all glue dependencies but pom doesn't reflect it -->
+          <groupId>com.amazonaws.glue</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.apache.hive:hive-exec</include>
+                  <include>org.apache.thrift:libthrift</include>
+                  <!-- Added avro and commons-lang3 explicitely for shading as newer version of 
+                       hive-exec pom may not have it -->
+                  <include>org.apache.avro:avro</include>
+                  <include>org.apache.commons:commons-lang3</include>
+                  <include>commons-codec:commons-codec</include>
+                  <include>com.google.guava:guava</include>
+                  <include>com.google.protobuf:protobuf-java</include>
+                  <include>com.amazonaws.glue:aws-glue-datacatalog-hive2-client</include>
+                </includes>
+                <excludes>
+                  <exclude>com.fasterxml.jackson.*:*</exclude>
+                </excludes>
+              </artifactSet>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <filters>
+                <filter>
+                  <artifact>org.apache.hive:hive-exec</artifact>
+                  <excludes>
+                    <exclude>*.jar</exclude>
+                    <exclude>*.thrift</exclude>
+                    <exclude>*-log4j.properties</exclude>
+                    <!-- also expressed as a dependency -->
+                    <exclude>templates/**</exclude>
+                    <!-- We need classes in llap/security package to load get_splits(GenericUDTFGetSplits) UDF -->
+                    <exclude>%regex[org/apache/hadoop/hive/llap/(?!security/).*]</exclude>
+                    <!-- Exclude Thrift version packaged inside hive-exec -->
+                    <exclude>org/apache/thrift/**</exclude>
+                    <exclude>org/apache/calcite/**</exclude>
+                    <exclude>org/slf4j/**</exclude>
+                    <!-- Exclude Protobuf version packaged inside hive-exec -->
+                    <exclude>com/google/protobuf/**</exclude>
+                    <exclude>META-INF/maven/com.google.protobuf/**</exclude>
+                    <exclude>org/apache/hadoop/hive/shims/ShimLoader.class</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>com.facebook.</pattern>
+                  <shadedPattern>hive.com.facebook.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson.</pattern>
+                  <shadedPattern>hive.com.fasterxml.jackson.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.</pattern>
+                  <shadedPattern>hive.com.google.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.parquet.</pattern>
+                  <shadedPattern>hive.org.apache.parquet.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>parquet.</pattern>
+                  <shadedPattern>hive.parquet.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>shaded.</pattern>
+                  <shadedPattern>hive.parquet.shaded.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons.codec.</pattern>
+                  <shadedPattern>hive.org.apache.commons.codec.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons.lang3.</pattern>
+                  <shadedPattern>hive.org.apache.commons.lang3.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons.lang.</pattern>
+                  <shadedPattern>hive.org.apache.commons.lang.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <!-- Required by some dremio code -->
+                  <pattern>org.apache.thrift.</pattern>
+                  <shadedPattern>com.dremio.hive.thrift.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.joda.</pattern>
+                  <shadedPattern>hive.org.joda.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javolution.</pattern>
+                  <shadedPattern>hive.javolution.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.avro.</pattern>
+                  <shadedPattern>hive.org.apache.avro.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.</pattern>
+                  <shadedPattern>hive.org.codehaus.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>jodd.</pattern>
+                  <shadedPattern>hive.jodd.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.iq80.snappy.</pattern>
+                  <shadedPattern>hive.org.iq80.snappy.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.json.</pattern>
+                  <shadedPattern>hive.org.json.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>au.com.bytecode.opencsv.</pattern>
+                  <shadedPattern>hive.au.com.bytecode.opencsv.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javaewah.</pattern>
+                  <shadedPattern>hive.javaewah.</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.realtime.</pattern>
+                  <shadedPattern>hive.javax.realtime.</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.dremio.contrib</groupId>
+                  <artifactId>dremio-hive2-exec-shaded</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                  <includes>**/**</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+import "util.proto";
+option java_multiple_files = true;
+option java_package = "com.dremio.services.nessie.grpc.api";
+option java_outer_classname = "ConfigApiProto";
+
+package com.dremio.services.nessie.grpc.proto;
+
+import "google/protobuf/timestamp.proto";
+
+service ConfigService {
+  rpc getConfig (Empty) returns (NessieConfiguration) {}
+  rpc getRepositoryConfig (RepositoryConfigRequest) returns (RepositoryConfigResponse) {}
+  rpc updateRepositoryConfig (UpdateRepositoryConfigRequest) returns (UpdateRepositoryConfigResponse) {}
+}
+
+message NessieConfiguration {
+  optional string default_branch = 1;
+  int32 maxSupportedApiVersion = 2;
+  optional int32 minSupportedApiVersion = 3;
+  optional string specVersion = 4;
+  optional string noAncestorHash = 5;
+  optional google.protobuf.Timestamp repositoryCreationTimestamp = 6;
+  optional google.protobuf.Timestamp oldestPossibleCommitTimestamp = 7;
+  map<string, string> additionalProperties = 8;
+  optional int32 actualApiVersion = 9;
+}
+
+message RepositoryConfigRequest {
+  repeated string typeName = 1;
+}
+
+message RepositoryConfigResponse {
+  // Note: Repository Config JSON representation is controlled by deployable type bundles.
+  repeated string configJson = 1;
+}
+
+message UpdateRepositoryConfigRequest {
+  string configJson = 1;
+}
+
+message UpdateRepositoryConfigResponse {
+  optional string previousConfigJson = 1;
+}
+

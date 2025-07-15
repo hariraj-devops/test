@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+.sql-help-panel {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 10px;
+  width: calc(40% - 21px);
+  padding: 8px;
+  border: 1px solid var(--border--neutral);
+  border-radius: 4px;
+  background-color: var(--fill--primary);
+
+  &__search {
+    input {
+      &:hover {
+        border-color: var(--border--hover);
+      }
+
+      &:focus {
+        border-color: var(--border--focused);
+        background-color: var(--fill--primary);
+      }
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding-bottom: 8px;
+
+    &.--disabled {
+      :global {
+        .filter-select-menu {
+          opacity: 0.3;
+          pointer-events: none;
+        }
+      }
+    }
+
+    :global {
+      .filter-select-menu {
+        border: none;
+        min-width: auto;
+        padding: 0;
+        display: inline-flex;
+
+        &.--filtered {
+          background-color: var(--fill--primary);
+          .filterSelectMenu__downIcon {
+            color: var(--icon--brand);
+          }
+        }
+      }
+
+      .filterSelectMenu__downIcon {
+        color: var(--icon--primary);
+        &:hover {
+          color: var(--icon--hover);
+        }
+      }
+    }
+  }
+
+  &__filterDropdown {
+    width: 260px;
+  }
+
+  &__filterHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__noResults {
+    height: 100%;
+    padding: 0 16px;
+
+    &__title {
+      word-break: break-all;
+      text-align: center;
+    }
+  }
+
+  &__resetFns {
+    color: var(--text--brand);
+    cursor: pointer;
+    font-weight: 400;
+    &:hover:not(.--disabled) {
+      text-decoration: underline;
+    }
+
+    &.--disabled {
+      color: var(--text--disabled);
+      cursor: default;
+    }
+  }
+}

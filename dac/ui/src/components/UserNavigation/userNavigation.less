@@ -1,0 +1,140 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  .userNavigation {
+    &__container {
+      border-right: 1px solid var(--border--color);
+      min-width: 272px;
+      width: 288px;
+      font-size: 14px;
+      margin-left: 16px;
+    }
+
+    &__link {
+      &,
+      &:hover {
+        text-decoration: none !important; // Have to set important here since global anchor has a !important to show underline
+      }
+
+      &:focus-visible {
+        .userNavigation__headerLink {
+          outline: -webkit-focus-ring-color auto 1px;
+        }
+      }
+    }
+
+    &__iconContainer {
+      margin-left: 8px;
+    }
+
+    &__titleContainer {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: var(--text--primary);
+    }
+
+    &__title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 64px;
+      font-weight: 600;
+      font-size: 16px;
+      padding-right: 8px;
+    }
+
+    &__loneTitle {
+      padding: 9px 20px;
+    }
+
+    &__location {
+      font-size: 12px;
+      padding-bottom: 4px;
+      font-weight: 400;
+      color: var(--text--faded);
+    }
+
+    &__item,
+    &__header,
+    &__headerLink,
+    &__navigation {
+      display: flex;
+      align-items: center;
+      padding: 7px 8px;
+      margin: 2px 16px 0 54px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--text--primary);
+      font-weight: 400;
+      height: 40px;
+
+      &.--selected {
+        background-color: var(
+          --fill--brand--bold
+        ) !important; // Important is needed here to ignore the :hover's background
+        color: white;
+        margin: 0 2x 0 4px;
+        font-weight: 600;
+      }
+    }
+
+    &__header {
+      margin: 0 16px;
+      padding-left: 0px;
+      &:hover {
+        background-color: inherit;
+      }
+    }
+
+    &__headerLink {
+      margin: 2px 16px 2px 4px;
+    }
+
+    &__navigation {
+      margin: 0 16px;
+      span {
+        color: var(--color--brand--600);
+      }
+
+      &:hover {
+        background-color: inherit;
+      }
+    }
+
+    &__icon {
+      margin: 0 8px 0 0;
+      height: 24px;
+      width: 24px;
+      color: var(--icon--primary);
+    }
+
+    &__itemList {
+      margin-top: 8px;
+    }
+
+    &__title-icon {
+      margin-right: 8px;
+      height: 24px;
+      width: 24px;
+      color: var(--icon--primary);
+    }
+  }
+  #selected {
+    filter: brightness(0) invert(1);
+  }
+}

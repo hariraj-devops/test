@@ -1,0 +1,130 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less";
+
+// from radium/typography.js, originally formLabel
+.alt-form-label {
+  font-family: var(--dremio--font-family);
+  font-weight: 400;
+  font-size: 13px;
+  color: #7f8b95;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.alt-form-default {
+  font-family: var(--dremio--font-family);
+  font-weight: 400;
+  font-size: 13;
+  color: var(--text--primary);
+}
+
+.alt-form-description {
+  font-family: var(--dremio--font-family);
+  font-weight: 400;
+  font-size: 13;
+  color: var(--text--faded);
+}
+
+.form-label {
+  .formLabel();
+}
+
+.form-default {
+  font-size: 14px;
+  color: var(--text--primary);
+}
+
+.form-description {
+  font-size: 12px;
+  color: var(--text--faded);
+}
+
+.form-placeholder {
+  font-weight: 400;
+  background-color: var(--fill--primary);
+  &::placeholder {
+    color: var(--text--placeholder);
+  }
+}
+
+.fixed-width-default {
+  font-family: var(--dremio--font-family--monospace);
+  font-size: 12px;
+  color: var(--text--primary);
+}
+
+.fixed-width-small {
+  .fixedWidthSmall();
+}
+
+.fixed-width-bold {
+  font-family: var(--dremio--font-family--monospace);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text--primary);
+}
+
+.unavailable {
+  .unavailable-font();
+}
+
+.disabled {
+  opacity: 0.67;
+}
+
+.dataset-title {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text--primary);
+}
+
+.path-link {
+  font-size: 11px;
+  color: #46b4d5;
+}
+
+.alt-path-link {
+  &:extend(.path-link);
+  font-family: var(--dremio--font-family);
+  font-weight: 400;
+}
+
+.path-end {
+  font-size: 11px;
+  color: var(--text--primary);
+}
+
+.key-label {
+  font-size: 11px;
+  color: var(--text--faded);
+}
+
+.key-value {
+  font-size: 11px;
+  color: var(--text--primary);
+}
+
+.metadata-white {
+  font-size: 11px;
+  color: #dddddd;
+}
+
+.link-light-white {
+  font-size: 11px;
+  color: #81d2eb;
+}

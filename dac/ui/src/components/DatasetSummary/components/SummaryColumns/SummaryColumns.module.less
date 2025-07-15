@@ -1,0 +1,59 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.summary {
+  &-columns-container {
+    padding-top: var(--dremio--spacing--2);
+  }
+  &-columns-title {
+    padding: 0px var(--dremio--spacing--2);
+    margin-bottom: var(--dremio--spacing--2);
+    font-weight: 600;
+  }
+
+  &-rows {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--dremio--font-size--default);
+    max-height: 270px;
+  }
+
+  &-row {
+    padding: 0px var(--dremio--spacing--2);
+    min-height: 32px;
+
+    :global {
+      .draggable-row {
+        margin-left: 0;
+        padding: 0;
+      }
+
+      .font-icon {
+        display: flex;
+        align-items: center;
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 4px;
+
+        .icon-type {
+          width: 18px !important;
+          height: 18px !important;
+        }
+      }
+    }
+  }
+}

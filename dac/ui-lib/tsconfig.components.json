@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["components/**/*"],
+  "compilerOptions": {
+    "incremental": true,
+    "strict": true,
+    "tsBuildInfoFile": "./.cache/components.tsbuildinfo"
+  }
+}

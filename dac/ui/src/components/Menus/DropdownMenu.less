@@ -1,0 +1,157 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  .dropdownMenu {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    &__togglerButton {
+      align-items: center;
+      display: flex;
+      cursor: pointer;
+      height: 27px;
+      padding: 0 4px;
+      gap: 5px;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    &__downArrow {
+      transform: rotate(180deg);
+    }
+
+    &__toggler {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    &__iconWrap {
+      align-items: center;
+      display: flex;
+      flex: 1 1 0%;
+      height: 27px;
+      justify-content: center;
+      padding: 0 3px;
+    }
+
+    &__icon {
+      color: var(--icon--primary);
+      height: 24px;
+      width: 24px;
+    }
+
+    &__divider {
+      border-left: 1px solid var(--border--neutral--solid);
+      display: block;
+      height: 20px;
+      margin: 0 4px;
+    }
+
+    &.--button {
+      background-color: transparent;
+      color: var(--text--faded);
+      border: 1px solid var(--border--neutral--solid);
+      border-radius: 4px;
+      height: 32px;
+      margin-right: 5px;
+      min-width: 50px;
+      transition: 300ms ease all;
+
+      &.--disabled {
+        background-color: var(--fill--disabled);
+        border: 1px solid var(--fill--disabled);
+      }
+
+      &:hover {
+        background-color: var(--fill--secondary);
+        border: 1px solid var(--border--neutral--solid);
+
+        .dropdownMenu__icon {
+          filter: invert(34%) sepia(21%) saturate(290%) hue-rotate(173deg)
+            brightness(88%) contrast(87%);
+        }
+      }
+    }
+
+    &.--solidButton {
+      background-color: var(--color--brand--300);
+      border: 1px solid transparent;
+      color: white;
+      border-radius: 4px;
+      height: 32px;
+      margin-right: 5px;
+      min-width: 50px;
+      padding: 0 10px;
+      transition: 300ms ease all;
+
+      &:hover {
+        background-color: transparent;
+        color: var(--color--brand--300);
+
+        .dropdownMenu__icon {
+          filter: invert(64%) sepia(28%) saturate(773%) hue-rotate(139deg)
+            brightness(93%) contrast(101%);
+        }
+      }
+    }
+
+    &.--disabled {
+      border-color: var(--border--neutral);
+      color: var(--text--disabled);
+      pointer-events: none;
+
+      &:hover {
+        background: inherit;
+        color: var(--text--disabled);
+
+        .dropdownMenu__icon {
+          filter: invert(80%) sepia(15%) saturate(10%) hue-rotate(354deg)
+            brightness(89%) contrast(85%);
+        }
+      }
+
+      .dropdownMenu__icon {
+        filter: invert(80%) sepia(15%) saturate(10%) hue-rotate(354deg)
+          brightness(89%) contrast(85%);
+      }
+
+      .dropdownMenu__togglerButton {
+        cursor: default;
+      }
+    }
+
+    &__groupButton {
+      padding: 0 !important;
+      background: transparent !important;
+      border-bottom: none !important;
+      min-width: fit-content !important;
+      border: none !important;
+      font-weight: 400;
+      &.--disabled {
+        cursor: default;
+      }
+    }
+
+    &__groupDivider {
+      height: 24px !important;
+      background-color: var(--border--neutral);
+    }
+  }
+}

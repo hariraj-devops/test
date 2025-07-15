@@ -1,0 +1,107 @@
+//
+// Copyright (C) 2017-2019 Dremio Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { shallow } from "enzyme";
+
+import Checkbox from "./Checkbox";
+
+describe("Checkbox", () => {
+  let wrapper;
+  let instance;
+  const minimalProps = {};
+  beforeEach(() => {
+    wrapper = shallow(<Checkbox {...minimalProps} />);
+    instance = wrapper.instance();
+  });
+
+  it("should render with minimal props without exploding", () => {
+    wrapper = shallow(<Checkbox {...minimalProps} />);
+    expect(wrapper).to.have.length(1);
+  });
+
+  it("should render props.label", () => {
+    wrapper.setProps({ label: "someLabel", labelBefore: true });
+    expect(wrapper.dive().text()).to.contain("someLabel");
+  });
+
+  it("should render props.inputType", () => {
+    wrapper.setProps({ inputType: "someInputType" });
+    expect(wrapper.find("input").props().type).to.equal("someInputType");
+  });
+
+  it("should render label first only if labelBefore=true", () => {
+    wrapper.setProps({ labelBefore: true, label: "someLabel" });
+    expect(wrapper.dive().children().at(0).text()).to.equal("someLabel");
+
+    wrapper.setProps({ labelBefore: false, label: "someLabel" });
+    expect(wrapper.dive().children().at(2).text()).to.equal("someLabel");
+  });
+
+  it("should render checked when checked is truthy regardless of value", () => {
+    expect(wrapper.find("input").props().checked).to.be.undefined;
+    wrapper.setProps({ value: true });
+    expect(wrapper.find("input").props().checked).to.be.undefined;
+    wrapper.setProps({ checked: false, value: true });
+    expect(wrapper.find("input").props().checked).to.be.false;
+    wrapper.setProps({ checked: true });
+    expect(wrapper.find("input").props().checked).to.be.true;
+    wrapper.setProps({ checked: true, value: false });
+    expect(wrapper.find("input").props().checked).to.be.true;
+  });
+
+  describe("#renderDummyCheckbox", () => {
+    it("should render ✔ only if isChecked", () => {
+      expect(
+        shallow(instance.renderDummyCheckbox(false)).html(),
+      ).to.not.contain("Checkbox-selected");
+      expect(shallow(instance.renderDummyCheckbox(true)).html()).to.contain(
+        "Checkbox-selected",
+      );
+    });
+  });
+
+  describe("render on/off switch", () => {
+    it("should use dummy w/o isOnOffSwitch", () => {
+      sinon.spy(instance, "renderDummyCheckbox");
+      sinon.spy(instance, "renderOnOffSwitch");
+      wrapper.setProps({ value: true });
+      expect(instance.renderDummyCheckbox).to.be.called;
+      expect(instance.renderOnOffSwitch).to.not.be.called;
+    });
+    it("should use isOnOffSwitch param", () => {
+      sinon.spy(instance, "renderDummyCheckbox");
+      sinon.spy(instance, "renderOnOffSwitch");
+      wrapper.setProps({ isOnOffSwitch: true });
+      expect(instance.renderDummyCheckbox).to.not.be.called;
+      expect(instance.renderOnOffSwitch).to.be.called;
+    });
+  });
+});

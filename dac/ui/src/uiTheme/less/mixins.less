@@ -1,0 +1,130 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.dragged-item-mixin() {
+  background-color: var(--fill--primary--selected);
+  border: 1px solid transparent;
+}
+
+.disabled-dragged-item-mixin() {
+  background-color: var(--border--neutral);
+  border: 1px solid transparent;
+}
+
+.formLabel() {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text--primary);
+}
+
+.fontBody() {
+  font-size: 12px;
+  color: var(--text--primary);
+}
+
+.h4-mixin() {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text--primary);
+}
+
+.font-basic() {
+  .fontBody();
+  font-family: var(--dremio--font-family);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings:
+    "calt" on,
+    "cv08" on;
+}
+
+.unavailable-font() {
+  font-size: 12px;
+  color: var(--text--disabled);
+}
+.fixedWidthSmall() {
+  font-family: var(--dremio--font-family--monospace);
+  font-size: 11px;
+  color: var(--text--primary);
+}
+
+.fixedWidthDefault() {
+  font-family: var(--dremio--font-family--monospace);
+  font-size: 12px;
+  color: var(--text--primary);
+}
+
+// grid system with overflow
+
+.grid-mixin() {
+  overflow: hidden;
+}
+
+.row-horizontal-padding-mixin(@cell-padding) {
+  margin-left: -@cell-padding / 2;
+  margin-right: -@cell-padding / 2;
+}
+
+.cell-horizontal-padding-mixin(@cell-padding) {
+  display: inline-block;
+  padding-left: @cell-padding / 2;
+  padding-right: @cell-padding / 2;
+}
+
+.row-vertical-padding-mixin(@cell-padding) {
+  margin-top: -@cell-padding / 2;
+  margin-bottom: -@cell-padding / 2;
+}
+
+.cell-vertical-padding-mixin(@cell-padding) {
+  display: inline-block;
+  padding-bottom: @cell-padding / 2;
+  padding-top: @cell-padding / 2;
+}
+
+.row-mixin(@horizontal-padding: 0, @vertical-padding: 0) {
+  .row-horizontal-padding-mixin(@horizontal-padding);
+  .row-vertical-padding-mixin(@vertical-padding);
+}
+
+.cell-mixin(@horizontal-padding: 0, @vertical-padding: 0) {
+  .cell-horizontal-padding-mixin(@horizontal-padding);
+  .cell-vertical-padding-mixin(@vertical-padding);
+}
+
+.clear-fix-mixin() {
+  &:after {
+    clear: both;
+    content: "";
+    display: table;
+    height: 0;
+  }
+}
+.flex-row-container() {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-center() {
+  display: flex;
+  align-items: center;
+}
+
+// Gray Icon Hover state
+.gray-icon-hover() {
+  filter: invert(53%) sepia(45%) saturate(6859%) hue-rotate(157deg)
+    brightness(70%) contrast(73%);
+}

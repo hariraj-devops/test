@@ -1,0 +1,128 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  .inner-join {
+    &__body {
+      .inner-join-left-menu {
+        height: auto;
+        min-width: 239px;
+        width: 239px;
+        border-right: 1px solid var(--border--neutral);
+        padding: 0 var(--dremio--spacing--1);
+
+        .field {
+          display: flex;
+          align-items: center;
+          padding: var(--dremio--spacing--05) 0;
+
+          input {
+            height: 32px;
+            border: 1px solid var(--border--neutral--solid);
+
+            &:hover {
+              border-color: var(--border--hover);
+            }
+
+            &:focus {
+              border-color: var(--border--focused);
+              background: var(--fill--primary);
+            }
+          }
+        }
+
+        &__column-list .draggable-row {
+          gap: var(--dremio--spacing--05);
+          margin-left: 0;
+          border: none;
+          border-radius: var(--dremio--radius--1);
+
+          .font-icon {
+            height: 16px !important;
+            width: 16px !important;
+
+            .fa.icon-type {
+              height: 16px !important;
+              width: 16px !important;
+            }
+          }
+
+          &:hover {
+            background-color: var(--fill--primary--hover);
+            cursor: move;
+          }
+        }
+      }
+
+      .drag-area {
+        padding: var(--dremio--spacing--05) var(--dremio--spacing--1);
+
+        .drag-sort-column {
+          height: 32px;
+          border-radius: var(--dremio--radius--1);
+          padding: var(--dremio--spacing--05);
+
+          .field {
+            height: 100%;
+            background: var(--fill--primary);
+          }
+
+          .inner-join-column .dragSource > div > div {
+            height: 100%;
+            margin: 0 !important;
+            color: var(--icon--primary);
+
+            .inner-join-column__body {
+              background-color: transparent;
+              border: none;
+              color: var(--text--primary);
+
+              .font-icon {
+                height: 16px !important;
+                width: 16px !important;
+
+                .fa.icon-type {
+                  height: 16px !important;
+                  width: 16px !important;
+                }
+              }
+
+              & > div {
+                gap: var(--dremio--spacing--05);
+
+                .EllipsedText {
+                  margin: 0;
+                }
+              }
+
+              &.--disabled {
+                background-color: var(--color--neutral--75);
+
+                & > div {
+                  cursor: not-allowed;
+                }
+              }
+            }
+          }
+
+          &:hover {
+            background-color: var(--fill--primary--hover);
+          }
+        }
+      }
+    }
+  }
+}

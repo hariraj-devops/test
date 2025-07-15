@@ -1,0 +1,15 @@
+//@deprecated
+@mixin colorsLight {
+  --color--sunken: var(--color--neutral--800);
+  --color--default: var(--color--neutral--800);
+
+  --color--nav--sonar: white;
+}
+
+//@deprecated
+@mixin colorsDark {
+  --color--sunken: var(--text--faded);
+  --color--default: var(--text--primary);
+
+  --color--nav--sonar: var(--color--neutral--100);
+}

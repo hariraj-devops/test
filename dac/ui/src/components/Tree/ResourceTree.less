@@ -1,0 +1,216 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "~#oss/uiTheme/less/mixins.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .modal-form-wrapper,
+  .update-dataset-content {
+    .treeNode .resourceTreeNodeWrap {
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--fill--primary--hover);
+      }
+      &.active-node {
+        background: var(--fill--primary--selected);
+        font-weight: 600;
+      }
+    }
+
+    .treeNode--isDisabledNode .resourceTreeNodeWrap {
+      background: transparent !important;
+    }
+  }
+
+  .treeNode {
+    border-radius: 4px;
+    cursor: pointer;
+
+    .dragSource:hover {
+      background: var(--fill--primary--hover);
+    }
+
+    .datasetItemLabel-item {
+      &:hover {
+        background: var(--fill--primary--hover);
+      }
+    }
+
+    .EllipsedText.node-text {
+      flex-grow: 0;
+    }
+  }
+
+  .resourceTree {
+    height: 100%;
+    padding-top: 2px;
+  }
+
+  .resourceTreeNode {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+
+    &-nameWrapper {
+      align-items: center;
+      display: flex;
+      min-width: 0;
+    }
+
+    &:hover {
+      .resourceTreeNode__add {
+        opacity: 1;
+        visibility: visible;
+      }
+      &--unstarred {
+        opacity: 1;
+        visibility: visible;
+      }
+      &--limitReached {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    &__iconBlock {
+      align-items: center;
+      margin-right: 5px;
+      gap: 4px;
+      display: none;
+      max-height: 24px;
+      padding-left: 4px;
+    }
+
+    &__add {
+      height: 24px;
+      width: 24px;
+      transition: 300ms ease all;
+      padding: 0;
+    }
+
+    &__starIcon {
+      height: 18px;
+      transition: 300ms ease all;
+      margin-bottom: 1px;
+      width: 18px;
+      padding: 0;
+    }
+
+    &--limitReached {
+      cursor: default !important;
+      filter: invert(95%) sepia(11%) saturate(88%) hue-rotate(170deg)
+        brightness(120%) contrast(89%);
+    }
+
+    // Fixed width for left panel items
+    .datasetItemLabel-item__content {
+      width: 80%;
+    }
+
+    .sources-branch-picker {
+      margin-left: 8px;
+      margin-right: 8px;
+      .branchPickerTag-labelDiv {
+        max-width: 100px;
+      }
+    }
+  }
+
+  .resourceTreeNodeWrap {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    padding: 4px 0;
+    width: 100%;
+
+    &.__columnItem {
+      padding-left: 10px;
+    }
+
+    .resourceTreeNode__add {
+      opacity: 0;
+    }
+    .resourceTreeNode--unstarred {
+      opacity: 0;
+    }
+    .resourceTreeNode--limitReached {
+      opacity: 0;
+    }
+
+    .TreeNode__arrowIcon {
+      color: var(--icon--primary);
+      padding: 0;
+
+      &:hover {
+        color: var(--icon--primary);
+      }
+    }
+
+    .resourceTreeNode__add,
+    .resourceTreeNode--unstarred {
+      color: var(--icon--primary);
+
+      &:hover {
+        color: var(--icon--hover);
+      }
+    }
+
+    &:hover {
+      .resourceTreeNode__add {
+        opacity: 1;
+      }
+      .resourceTreeNode--unstarred {
+        opacity: 1;
+      }
+      .resourceTreeNode--limitReached {
+        opacity: 1;
+      }
+
+      .resourceTreeNode__iconBlock {
+        display: flex;
+      }
+    }
+  }
+
+  .resourceTreeContainer {
+    height: 100%;
+    overflow: auto;
+  }
+
+  .explorePage .join .resourceTreeContainer .resourceTree .global-tree {
+    width: 552px !important;
+
+    // this allows all nodes in the tree to have a hover effect
+    .treeNode .resourceTreeNodeWrap {
+      border-radius: var(--dremio--radius--1);
+
+      &:hover {
+        background: var(--fill--primary--hover);
+      }
+    }
+
+    // this ensures that only dataset nodes have an active effect
+    .treeNode.treeNode--hasResources .resourceTreeNodeWrap {
+      &.active-node {
+        background: var(--fill--primary--selected);
+      }
+    }
+  }
+}

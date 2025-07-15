@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.dremio</groupId>
+    <artifactId>dremio-dac-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>dremio-dac-daemon</artifactId>
+  <packaging>jar</packaging>
+  <name>Analyst Center - daemon</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-dac-backend</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-dac-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-elasticsearch-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-hdfs-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-mongo-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-nas-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-hive-function-registry</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.sabot</groupId>
+      <artifactId>dremio-sabot-kernel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-common</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.sabot</groupId>
+      <artifactId>dremio-sabot-kernel</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-dac-backend</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.twill</groupId>
+      <artifactId>twill-common</artifactId>
+      <version>${twill.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.provision</groupId>
+      <artifactId>dremio-yarn</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.dremio.tools</groupId>
+      <artifactId>dremio-attach-tool</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.services</groupId>
+      <artifactId>dremio-services-jobs</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.contrib</groupId>
+      <artifactId>dremio-hive3-exec-shaded</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-s3-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-azure-storage-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-gcs-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-dataplane-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio.plugins</groupId>
+      <artifactId>dremio-icebergcatalog-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseSets>
+            <licenseSet>
+              <excludes combine.children="append">
+                <excludes>**/src/test/resources/deltalake/**</excludes>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <classpathDependencyExcludes>
+            <!--
+                 Exclude Hive uber-jars and their corresponding shaded modules, as these
+                 can introduce dependencies that conflict with the rest of Dremio (eg Jetty).
+                 In production these won't be in Dremio's classpath anyway and will be loaded through PF4J.
+            -->
+            <classpathDependencyExclude>com.dremio.*:*-shaded-*</classpathDependencyExclude>
+            <classpathDependencyExclude>com.dremio.*:*hive-plugin-shim*:jar</classpathDependencyExclude>
+          </classpathDependencyExcludes>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <!--
+               To run a test server:
+               mvn org.codehaus.mojo:exec-maven-plugin:exec
+          -->
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <classpathScope>test</classpathScope>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xms512m</argument>
+                <argument>-Xmx4g</argument>
+                <argument>-XX:MaxDirectMemorySize=1g</argument>
+                <argument>-Ddremio_debug=true</argument>
+                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>
+                <argument>-Ddac_prepopulate=true</argument>
+                <argument>-Ddebug.addDefaultUser=true</argument>
+                <argument>-Ddebug.allowTestApis=true</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.dremio.dac.daemon.DremioDaemon</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>community-build</id>
+      <activation>
+        <property>
+          <name>dremio.oss-only</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.dremio.community.sabot.joust</groupId>
+          <artifactId>dremio-ce-sabot-joust-java</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.sabot</groupId>
+          <artifactId>dremio-ce-sabot-kernel</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.sabot</groupId>
+          <artifactId>dremio-ce-sabot-scheduler</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.plugins</groupId>
+          <artifactId>dremio-ce-elasticsearch-plugin</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.contrib</groupId>
+          <artifactId>db2-shade</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.plugins</groupId>
+          <artifactId>dremio-ce-parquet-plugin</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.plugins</groupId>
+          <artifactId>dremio-ce-mongo-plugin</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.plugins</groupId>
+          <artifactId>dremio-ce-jdbc-plugin</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.dremio.community.services</groupId>
+          <artifactId>dremio-ce-services-cachemanager</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.amazon.redshift</groupId>
+          <artifactId>redshift-jdbc42</artifactId>
+          <version>2.1.0.28</version>
+        </dependency>
+        <dependency>
+          <!-- Necessary for IAM authentication in Redshift (marked as optional in redshift-jdbc42) -->
+          <groupId>com.amazonaws</groupId>
+          <artifactId>aws-java-sdk-redshift</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.oracle.database.jdbc</groupId>
+          <artifactId>ojdbc10</artifactId>
+          <version>19.22.0.0</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>

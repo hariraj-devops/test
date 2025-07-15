@@ -1,0 +1,238 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.dremio.dac.explore;
+
+import static com.dremio.common.util.DateTimes.parseIsoLocalTimestampWithSpaces;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.dremio.common.memory.DremioRootAllocator;
+import com.dremio.dac.explore.HistogramGenerator.TruncEvalEnum;
+import com.dremio.dac.explore.model.DatasetPath;
+import com.dremio.dac.model.job.JobData;
+import com.dremio.dac.model.job.JobDataFragment;
+import com.dremio.dac.model.job.JobDataWrapper;
+import com.dremio.dac.proto.model.dataset.DataType;
+import com.dremio.service.job.proto.QueryType;
+import com.dremio.service.jobs.JobStatusListener;
+import com.dremio.service.jobs.SqlQuery;
+import com.dremio.service.namespace.dataset.DatasetVersion;
+import com.google.common.collect.ImmutableSet;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.arrow.memory.BufferAllocator;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.stubbing.Answer;
+
+/** Test class for Histogram Generation */
+public class TestHistogramGenerator {
+  private BufferAllocator allocator;
+
+  @Before
+  public void setUp() {
+    allocator = DremioRootAllocator.create(0, Long.MAX_VALUE);
+  }
+
+  @After
+  public void cleanUp() {
+    allocator.close();
+  }
+
+  @Test
+  public void testTimeIntervals() throws Exception {
+    HistogramGenerator hg = new HistogramGenerator(null);
+
+    String myTimeStr = "2016-02-29 13:59:01";
+    LocalDateTime myTime = parseIsoLocalTimestampWithSpaces(myTimeStr);
+    System.out.println("Exact time: " + myTime + ", Month: " + myTime.getMonthValue());
+    for (HistogramGenerator.TruncEvalEnum value :
+        HistogramGenerator.TruncEvalEnum.getSortedAscValues()) {
+      LocalDateTime roundedDown = hg.roundTime(myTime, value, true);
+      LocalDateTime roundedUp = hg.roundTime(myTime, value, false);
+      switch (value) {
+        case SECOND:
+          assertEquals(myTime, roundedDown);
+          assertEquals(myTime, roundedUp);
+          break;
+        case MINUTE:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 13:59:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 14:00:00"), roundedUp);
+          break;
+        case HOUR:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 13:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 14:00:00"), roundedUp);
+          break;
+        case DAY:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-03-01 00:00:00"), roundedUp);
+          break;
+        case WEEK:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-29 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-03-07 00:00:00"), roundedUp);
+          break;
+        case MONTH:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-02-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-03-01 00:00:00"), roundedUp);
+          break;
+        case QUARTER:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-01-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-04-01 00:00:00"), roundedUp);
+          break;
+        case YEAR:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2016-01-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2017-01-01 00:00:00"), roundedUp);
+          break;
+        case DECADE:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2010-01-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2020-01-01 00:00:00"), roundedUp);
+          break;
+        case CENTURY:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2000-01-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("2100-01-01 00:00:00"), roundedUp);
+          break;
+        case MILLENNIUM:
+          assertEquals(parseIsoLocalTimestampWithSpaces("2000-01-01 00:00:00"), roundedDown);
+          assertEquals(parseIsoLocalTimestampWithSpaces("3000-01-01 00:00:00"), roundedUp);
+          break;
+        default:
+          fail();
+      }
+    }
+  }
+
+  @Test
+  public void testProduceRanges() {
+    List<Number> ranges = new ArrayList<>();
+    HistogramGenerator.produceRanges(
+        ranges,
+        LocalDateTime.of(1970, 1, 1, 1, 0, 0),
+        LocalDateTime.of(1970, 1, 1, 11, 59, 0),
+        TruncEvalEnum.HOUR);
+    List<Number> expected = new ArrayList<>();
+    for (int i = 0; i < 13; i++) {
+      expected.add((i + 1) * 3600_000L);
+    }
+    Assert.assertEquals(expected.size(), ranges.size());
+    Assert.assertEquals(expected, ranges);
+  }
+
+  @Test
+  public void testSelectionCount() {
+    testSelectionCountHelper("colName = 'val1'", 1562383L, DataType.TEXT, ImmutableSet.of("val1"));
+    testSelectionCountHelper(
+        "colName = 'val1' OR colName = 'val2'",
+        1562L,
+        DataType.TEXT,
+        ImmutableSet.of("val1", "val2"));
+    Set<String> selectedValues = new LinkedHashSet<>(Arrays.asList("val1", null));
+    testSelectionCountHelper(
+        "colName = 'val1' OR colName IS NULL", 1562L, DataType.TEXT, selectedValues);
+    testSelectionCountHelper(
+        "colName = 1 OR colName = 2", 15432L, DataType.INTEGER, ImmutableSet.of("1", "2"));
+    testSelectionCountHelper(
+        "colName = DATE '2017-05-03' OR colName = DATE '2035-12-12'",
+        23L,
+        DataType.DATE,
+        ImmutableSet.of("2017-05-03", "2035-12-12"));
+    testSelectionCountHelper(
+        "colName = TIMESTAMP '2017-05-03 12:23:24' OR colName = TIMESTAMP '2035-12-12 05:23:23'",
+        2L,
+        DataType.DATETIME,
+        ImmutableSet.of("2017-05-03 12:23:24", "2035-12-12 05:23:23"));
+    testSelectionCountHelper(
+        "colName = TIME '12:23:24' OR colName = TIME '05:23:23'",
+        6L,
+        DataType.TIME,
+        ImmutableSet.of("12:23:24", "05:23:23"));
+    testSelectionCountHelper("colName = ''", 1562383L, DataType.TEXT, ImmutableSet.of(""));
+    testSelectionCountHelper(null, 0L, DataType.INTEGER, ImmutableSet.<String>of());
+  }
+
+  private void testSelectionCountHelper(
+      final String expFilter, final long expCount, DataType type, Set<String> selectedValues) {
+    final DatasetPath datasetPath =
+        new DatasetPath(Arrays.asList("dfs", "parquet", "lineitem.parquet"));
+    final DatasetVersion datasetVersion = DatasetVersion.newVersion();
+
+    final QueryExecutor queryExecutor = mock(QueryExecutor.class);
+    when(queryExecutor.runQueryWithListener(
+            any(SqlQuery.class),
+            any(QueryType.class),
+            any(DatasetPath.class),
+            any(DatasetVersion.class),
+            any(JobStatusListener.class)))
+        .thenAnswer(
+            (Answer<JobData>)
+                invocation -> {
+                  final String query = invocation.getArgument(0, SqlQuery.class).getSql();
+                  final JobStatusListener listener =
+                      invocation.getArgument(4, JobStatusListener.class);
+                  JobData jobData = mock(JobDataWrapper.class);
+
+                  when(jobData.getJobResultsTable()).thenReturn("jobResults.previewJob");
+
+                  listener.jobCompleted();
+                  return jobData;
+                });
+    when(queryExecutor.runQueryAndWaitForCompletion(
+            any(SqlQuery.class),
+            any(QueryType.class),
+            any(DatasetPath.class),
+            any(DatasetVersion.class)))
+        .thenAnswer(
+            (Answer<JobData>)
+                invocation -> {
+                  final String query = invocation.getArgument(0, SqlQuery.class).getSql();
+                  JobData jobData = mock(JobDataWrapper.class);
+
+                  if (expFilter != null) {
+                    assertTrue(query, query.contains(expFilter));
+                  } else {
+                    assertFalse(query, query.contains("WHERE"));
+                  }
+                  JobDataFragment fragment = mock(JobDataFragment.class);
+                  when(jobData.truncate(allocator, 1)).thenReturn(fragment);
+
+                  when(fragment.extractValue("dremio_selection_count", 0)).thenReturn(expCount);
+                  return jobData;
+                });
+
+    HistogramGenerator hg = new HistogramGenerator(queryExecutor);
+    long count =
+        hg.getSelectionCount(
+            datasetPath,
+            datasetVersion,
+            new SqlQuery("SELECT * FROM dataset", "user"),
+            type,
+            "colName",
+            selectedValues,
+            allocator);
+
+    assertEquals(expCount, count);
+  }
+}

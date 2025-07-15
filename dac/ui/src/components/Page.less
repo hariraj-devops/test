@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .page {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .page-content {
+    padding: 0;
+    display: flex;
+    flex: 1 1 auto;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .mainPage .sideNav {
+    height: 100vh;
+  }
+  .sideNav {
+    display: none;
+  }
+}
+
+.page-content {
+  composes: flex-element-auto flex-container flex-stretch-items from "~#oss/uiTheme/less/layout.less";
+  //needed to show a spinner in of <Suspense /> only above content area
+  position: relative;
+}

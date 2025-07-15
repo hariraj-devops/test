@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  .popupNotification {
+    .MuiSnackbarContent {
+      &-root {
+        min-width: 240px;
+        max-width: 600px;
+        color: var(--text--primary);
+        border: none;
+        font-size: 12px;
+        font-family: var(--dremio--font-family);
+        border-radius: 4px;
+        padding: 6px 16px 6px 12px !important;
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+      &-message,
+      &-action {
+        padding: 0 0 0 0;
+      }
+
+      &-message {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    &__close {
+      padding: 0 !important;
+
+      .font-icon,
+      .XBig {
+        height: 20px !important;
+        width: 20px !important;
+      }
+    }
+
+    .type-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+
+    &.--default .MuiSnackbarContent-root {
+      background-color: var(--fill--primary);
+    }
+
+    &.--success .MuiSnackbarContent-root {
+      background-color: var(--fill--success);
+    }
+
+    &.--error .MuiSnackbarContent-root {
+      background-color: var(--fill--danger);
+    }
+
+    &.--warning .MuiSnackbarContent-root {
+      background-color: var(--fill--warning);
+    }
+  }
+}

@@ -1,0 +1,277 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax="proto3";
+package plan;
+
+import "PRelDataType.proto";
+import "PRexNode.proto";
+import "PRelTraitSet.proto";
+import "PCatalog.proto";
+
+import "google/protobuf/wrappers.proto";
+
+option java_package = "com.dremio.plan.serialization";
+option java_outer_classname = "PPhyscialRels";
+
+option optimize_for = SPEED;
+
+
+message PPhysicalRelNode {
+  oneof derived_class {
+    PProjectPrel project = 1;
+    PResultWriterCommiterPrel result_writer_commiter = 2;
+    PResultWriterPrel result_writer = 3;
+    PScreenPrel screen = 4;
+    PValuesPrel values = 5;
+    PFilterPrel filter = 6;
+
+    // Joins
+    PHashJoinPrel hash_join = 7;
+    PNestedLoopJoinPrel nested_loop_join = 8;
+    PMergeJoinPrel merge_join = 9;
+
+    //Aggregates
+    PHashAggPrel hash_aggregate = 10;
+    PStreamAggPrel stream_aggregate = 11;
+
+    PSortPrel sort = 12;
+
+    //Exchange
+    PAdaptiveHashExchangePrel adaptive_hash_exchange = 13;
+    PBridgeExchangePrel bridge_exchange = 14;
+    PBroadcastExchangePrel broadcast_exchange = 15;
+    PHashToMergeExchangePrel hash_to_merge_exchange = 16;
+    PHashToRandomExchangePrel hash_to_random_exchange = 17;
+    POrderedPartitionExchangePrel ordered_partition_exchange = 18;
+    PRoundRobinExchangePrel round_robin_exchange = 19;
+    PSingleMergeExchangePrel single_merge_exchange = 20;
+    PUnionExchangePrel union_exchange = 21;
+    PUnorderedDeMuxExchangePrel unordered_demux_exchange = 22;
+    PUnorderedMuxExchangePrel unordered_mux_exchange = 23;
+
+    //Scan
+    PTableFunctionPrel table_function = 24;
+    PIcebergManifestListPrel iceberg_manifest_list = 25;
+  }
+}
+
+message PIcebergManifestListPrel {
+  enum PManifestContentType {
+    DATA = 0;
+    DELETES = 1;
+    ALL = 2;
+  }
+  PRelTraitSet trait_set = 1;
+  plan.catalog.PTableMetadata table_metadata = 3;
+  bytes batch_schema_bytes = 4;
+  repeated string projected_columns = 5;
+  repeated PRelDataTypeField field_types = 6;
+  string expression = 7;
+  PManifestContentType manifest_content_type = 8;
+}
+
+message PTableFunctionPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 3;
+  plan.catalog.PTableMetadata table_metadata = 4;
+  string function_config_json = 5;
+  repeated PRelDataTypeField field_types = 6;
+  int64 surviving_records = 7;
+  repeated PRuntimeFilteredRelInfo runtime_filter_info = 8;
+  string user = 9;
+}
+
+
+message PAdaptiveHashExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PDistributionField fields = 3;
+  string hash_function_name = 4;
+  bool window_pushed_down = 5;
+}
+
+message PBridgeExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  string bridge_set_id = 3;
+}
+
+message PBroadcastExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PHashToMergeExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PDistributionField fields = 3;
+  PRelCollation collation = 4;
+  int32 num_end_points = 5;
+}
+
+message PHashToRandomExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PDistributionField fields = 3;
+  string hashFunctionName = 4;
+  bool window_pushed_down = 5;
+}
+
+message POrderedPartitionExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PRoundRobinExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PSingleMergeExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  PRelCollation collation = 3;
+}
+
+message PUnionExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PUnorderedDeMuxExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PDistributionField fields = 3;
+}
+
+message PUnorderedMuxExchangePrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  int32 fragment_per_node = 3;
+}
+
+message PFilterPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  PRexNode condition = 3;
+}
+
+enum POperatorPhase {
+  PHASE_1of1 = 0;
+  PHASE_1of2 = 1;
+  PHASE_2of2 = 2;
+}
+
+message PHashAggPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  PGroupSet group_set = 3;
+  repeated PAggregateCall aggregate_call = 4;
+  POperatorPhase operator_phase = 5;
+}
+
+message PStreamAggPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  PGroupSet group_set = 3;
+  repeated PAggregateCall aggregate_call = 4;
+  POperatorPhase operator_phase = 5;
+}
+
+message PRuntimeFilteredRelInfo {
+  enum PColumnType {
+    PARTITION = 0;
+    RANDOM = 1;
+  }
+  PRuntimeFilterId runtime_filter_id = 1;
+  PColumnType column_type = 2;
+  string filtered_column_name = 3;
+  string filtering_column_name = 4;
+}
+
+message PRuntimeFilterId {
+  int64 value = 1;
+  bool is_broadcast_join = 2;
+}
+
+message PHashJoinPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode right = 2;
+  PPhysicalRelNode left = 3;
+  PRexNode condition = 4;
+  PRexNode extra_condition = 5;
+  PJoinType join_type = 6;
+  bool swapped = 7;
+  optional PRuntimeFilterId runtime_filter_id = 8;
+  bool ignore_for_join_analysis = 9;
+}
+
+message PNestedLoopJoinPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode right = 2;
+  PPhysicalRelNode left = 3;
+  PRexNode condition = 4;
+  PJoinType join_type = 5;
+  PRexNode vector_expression = 6;
+}
+
+message PMergeJoinPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode right = 2;
+  PPhysicalRelNode left = 3;
+  PRexNode condition = 4;
+  PJoinType join_type = 5;
+  PRexNode vector_expression = 6;
+}
+
+message PResultWriterCommiterPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PResultWriterPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PProjectPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PRexNode expr = 3;
+  repeated PRelDataTypeField field_types = 4;
+
+}
+
+message PValuesPrel {
+  message PValuesPrelTuple {
+    repeated PRexLiteral literal = 1;
+  }
+  PRelTraitSet traitSet = 1;
+
+  repeated PRelDataTypeField fields = 2;
+  repeated PValuesPrelTuple tuples = 3;
+}
+
+message PScreenPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+}
+
+message PSortPrel {
+  PRelTraitSet trait_set = 1;
+  PPhysicalRelNode input = 2;
+  repeated PRelFieldCollation collation = 3;
+}

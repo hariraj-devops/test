@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.dremio</groupId>
+    <artifactId>dremio-dac-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>dremio-ui-lib</artifactId>
+  <packaging>jar</packaging>
+  <name>Dremio UI Library</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-icons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseSets>
+            <licenseSet>
+              <excludes combine.children="append">
+                <exclude>**/*.editorconfig</exclude>
+                <exclude>.npmrc</exclude>
+                <exclude>.nvmrc</exclude>
+                <exclude>src/react-app-env.d.ts</exclude>
+                <exclude>Makefile</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+          <mapping>
+            <!-- full file names -->
+            <run>SCRIPT_STYLE</run>
+          </mapping>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-pnpm</goal>
+            </goals>
+            <phase>initialize</phase>
+          </execution>
+          <execution>
+            <id>pnpm install</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>initialize</phase>
+            <!-- Optional configuration which provides for running any npm
+              command -->
+            <configuration>
+              <arguments>${pnpm.installscript}</arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <!-- jest generates [ERROR] records in the log even if all unit tests pass:
+            [ERROR] PASS src/utils/apiUtils.test.js
+            ...
+            [ERROR] Ran all test suites.
+            -->
+            <id>test</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run test</arguments>
+              <skip>${skipTests}</skip>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>build</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <includeResources>false</includeResources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <skip>${skip.uiclean}</skip>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/node_modules</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/dist</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/dist-themes</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/dist-cjs</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/dist-esm</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/.cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

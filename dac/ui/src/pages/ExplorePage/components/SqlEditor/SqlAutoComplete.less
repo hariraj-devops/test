@@ -1,0 +1,127 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "~#oss/uiTheme/less/mixins.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .sqlAutocomplete {
+    border: 1px solid var(--color--neutral--75);
+    border-radius: 4px;
+    min-height: 40px;
+    margin-left: 10px;
+    margin-top: 8px;
+    min-width: 300px;
+    background-color: white;
+
+    &.vs-dark {
+      background-color: var(--color--neutral--800);
+      border-color: var(--color--neutral--600);
+
+      .sqlAutocomplete__actions {
+        border-color: var(--color--neutral--600);
+
+        .sqlAutocomplete__context {
+          color: var(--color--neutral--100);
+        }
+      }
+    }
+
+    .sqlEditor__toggleIcon,
+    .function__toggleIcon,
+    .sql__autocompleteIcon,
+    .keyboard__shortcutsIcon {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+
+      img {
+        position: relative;
+        top: 10px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .keyboard__shortcutsIcon {
+      cursor: default;
+    }
+  }
+
+  .sql__lightIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--color--neutral--500) !important;
+    &:hover,
+    &:focus {
+      color: var(--color--brand--450) !important;
+    }
+  }
+
+  .sql__darkIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--color--neutral--100) !important;
+    &:hover,
+    &:focus {
+      color: var(--color--brand--250) !important;
+    }
+  }
+
+  .sqlAutocomplete__actions {
+    align-items: center;
+    border-bottom: 1px solid var(--color--neutral--75);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 8px 10px;
+    flex-wrap: wrap;
+  }
+
+  .sqlAutocomplete__context {
+    display: flex;
+    align-items: center;
+    color: var(--color--neutral--800);
+  }
+
+  .vs-dark {
+    .sqlAutoComplete_actions {
+      border-color: var(--color--neutral--600);
+    }
+    .sqlAutocomplete__context {
+      color: var(--color--neutral--100);
+    }
+  }
+
+  .sqlAutocomplete__contextText-light,
+  .sqlAutocomplete__contextText-dark {
+    color: var(--color--brand--450);
+    cursor: pointer;
+    margin-left: 5px;
+
+    &:hover,
+    &:focus {
+      &,
+      .branchPickerTag-labelDiv {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .sqlAutocomplete__contextText-dark {
+    color: var(--color--brand--250);
+  }
+}

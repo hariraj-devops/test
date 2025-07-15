@@ -1,0 +1,54 @@
+#
+# Copyright (C) 2017-2019 Dremio Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+openapi: 3.1.0
+info:
+  title: Test API
+  version: v4
+  description: |-
+    Test spec2.
+  x-dremio:
+    # Proto package.
+    protoPackage: com.dremio.test.api2
+    # Package for the Java classes generated from protos.
+    javaPackage: com.dremio.test.api2
+    # Java class with all generated Java protos.
+    javaOuterClass: TestApiProto2
+
+servers:
+  - url: "api/v4"
+
+components:
+  schemas:
+    Body2:
+      type: object
+      description: |
+        Includes a message from the other file.
+      properties:
+        value:
+          $ref: './spec1.yaml#/components/schemas/GetBody'
+        required_value:
+          $ref: './spec1.yaml#/components/schemas/GetBody'
+        enumList:
+          type: array
+          description: |
+            Referenced enum.
+          items:
+            $ref: './spec1.yaml#/components/schemas/Enum'
+        enumArray:
+          $ref: './spec1.yaml#/components/schemas/EnumArray'
+      required:
+        - required_value

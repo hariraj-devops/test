@@ -1,0 +1,186 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  .finder-nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    a.pointer {
+      padding-left: var(--dremio--spacing--1);
+      padding-right: var(--dremio--spacing--1);
+      cursor: pointer;
+    }
+
+    .none-link-collapsible {
+      padding-left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: start;
+      &:hover {
+        color: var(--text--primary);
+      }
+    }
+
+    .icon-container {
+      width: 24px;
+      height: 24px;
+      margin-right: 4px;
+      .finder-nav__collapse-control {
+        color: var(--icon--primary);
+        block-size: 24px;
+        inline-size: 24px;
+        cursor: pointer;
+      }
+      .finder-nav__collapse-control:hover {
+        color: var(--icon--hover);
+      }
+    }
+
+    .finder-nav-item {
+      a.finder-nav-item-link {
+        padding-left: 24px;
+      }
+    }
+
+    &.finder-nav--collapsible {
+      // Show collapse control only if the finder nav is collapsible
+      .finder-nav__collapse-control {
+        display: inline-block;
+      }
+      a.pointer {
+        padding-left: 0;
+      }
+    }
+
+    &.finder-nav--collapsible.finder-nav--collapsed {
+      // Hide the finder content when it is collapsed
+      .nav-list {
+        display: none;
+      }
+      .finder-nav-title {
+        font-weight: 600;
+      }
+    }
+
+    .no-padding-left {
+      padding-left: 0 !important;
+    }
+
+    .finder-nav-title {
+      position: relative;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-weight: 400;
+      font-size: 14px;
+      height: 32px;
+      width: 100%;
+      cursor: pointer;
+
+      .finder-nav-item {
+        width: 100%;
+      }
+      .finder-nav-item-link {
+        padding-left: var(--dremio--spacing--1) !important;
+      }
+
+      &:hover,
+      :focus-within {
+        background-color: var(--fill--primary--hover);
+      }
+
+      a:not(.add-button) {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        color: var(--text--faded);
+
+        &.active {
+          font-weight: 600;
+          background-color: var(--fill--primary--selected);
+        }
+      }
+
+      .dremio-tooltip__child-wrap {
+        margin-left: auto;
+      }
+
+      .pull-right.dremio-icon-button {
+        width: 24px;
+        height: 24px;
+        margin-left: auto;
+        display: inline-flex;
+        padding: 0;
+
+        .add-space-icon {
+          width: 24px;
+          height: 24px;
+          color: var(--icon--primary);
+        }
+
+        &:hover {
+          .add-space-icon {
+            color: var(--icon--hover);
+          }
+        }
+      }
+    }
+
+    .no-margin-top {
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-list {
+      overflow: auto;
+
+      .show-more-btn {
+        color: var(--color--brand--300);
+        margin: 7px 0 0;
+        cursor: pointer;
+        display: inline-block;
+      }
+      .open-more {
+        position: relative;
+        padding: 0 0 23px;
+        .show-more-btn {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+        }
+      }
+    }
+
+    .loader {
+      min-height: 30px;
+      text-align: center;
+      .fa {
+        vertical-align: middle;
+      }
+    }
+  }
+}

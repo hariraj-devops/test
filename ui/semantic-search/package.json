@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "@dremio/semantic-search",
+  "type": "module",
+  "scripts": {
+    "dist": "tsc --project src/tsconfig.json --outDir dist",
+    "src/parser": "lezer-generator ./dremio-semantic-search.grammar -o ./src/parser/index.ts",
+    "prepare": "node --run dist",
+    "test": "node --import tsx --test \"./src/**/*.test.ts\"",
+    "test:junit": "node --import tsx --test-reporter junit grammar-tests.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "packageManager": "pnpm@9.13.2",
+  "devDependencies": {
+    "@lezer/generator": "^1.7.0",
+    "@types/node": "^20.12.12",
+    "tsx": "^4.10.5",
+    "typescript": "5.7.2"
+  },
+  "dependencies": {
+    "@codemirror/language": "^6.10.2",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.32.0",
+    "@lezer/highlight": "^1.2.0",
+    "@lezer/lr": "^1.4.0",
+    "codemirror": "^6.0.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "@types/react": "^18.3.12"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  }
+}

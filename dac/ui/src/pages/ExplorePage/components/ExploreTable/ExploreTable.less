@@ -1,0 +1,266 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less"; // replacement of typography.less with mixins.less changes the output significantly
+//but the change is in better direction. Duplicated styles from typography are not loaded
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  .fixed-data-table {
+    font-feature-settings:
+      "calt" off,
+      "cv08" on;
+    // todo: this needs to be scoped!
+    background-color: var(--fill--primary);
+    padding-top: 0;
+    position: relative;
+
+    .fa-spinner {
+      margin-left: 50%;
+      left: -18px;
+      top: 10px;
+      position: relative;
+      transform: translateX(-50%);
+      color: gray;
+      font-size: 50px;
+    }
+
+    .cell,
+    .cell-wrap {
+      outline: none;
+      display: inline-block;
+      overflow: hidden;
+      margin: 0 5px;
+      white-space: pre;
+      padding: 5px 0;
+      height: 23px;
+      line-height: 15px;
+      .fixedWidthSmall();
+    }
+
+    input.cell-header {
+      margin: 0;
+    }
+
+    .right-dropdown {
+      width: 140px;
+      top: 30px;
+      position: absolute;
+      left: 0;
+      border: 1px solid var(--color--neutral--200);
+      z-index: 3;
+      box-shadow: var(--dremio--shadow--layer-1);
+      background: #f4f4f4;
+      border-radius: 2px;
+      font-size: 15px;
+
+      .block {
+        border-bottom: 1px solid var(--border--neutral);
+        padding-bottom: 5px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .item {
+        padding: 5px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: gray;
+          opacity: 0.5;
+          color: #fff;
+        }
+      }
+    }
+
+    .off {
+      float: right;
+      width: 20px;
+      height: 20px;
+
+      &.click {
+        background-color: grey;
+        opacity: 0.3;
+      }
+    }
+
+    .column-header {
+      float: right;
+      font-size: 16px;
+      position: relative;
+      top: 3px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    .type {
+      color: var(--icon--primary);
+      opacity: 0.6;
+      font-size: 12px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .fixedDataTableCellGroupLayout_cellGroup {
+      backface-visibility: hidden;
+      left: 0;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+    }
+
+    .public_fixedDataTableCell_main {
+      background-color: transparent;
+      border-color: var(--border--neutral);
+    }
+
+    .public_fixedDataTableCell_cellContent {
+      padding: 0px;
+      font-size: 12px;
+    }
+
+    .fixedDataTableLayout_main.public_fixedDataTable_main {
+      margin-left: 0;
+      margin-right: 0;
+      border: 0;
+      border: 1px solid var(--border--neutral);
+      z-index: 0 !important;
+    }
+
+    .fixedDataTableCellGroupLayout_cellGroup > .public_fixedDataTableCell_main {
+      display: inline-block;
+      vertical-align: top;
+      white-space: normal;
+    }
+
+    .fixedDataTableCellGroupLayout_cellGroupWrapper {
+      position: absolute;
+      top: 0;
+    }
+
+    .fixedDataTableCellLayout_main {
+      border-right-style: solid;
+      border-right-width: 1px;
+      border-width: 0 1px 0 0;
+      box-sizing: border-box;
+      display: block;
+      overflow: hidden;
+      position: absolute;
+      white-space: normal;
+    }
+
+    .fixedDataTableCellLayout_lastChild {
+      border-width: 0 1px 1px 0;
+    }
+
+    .fixedDataTableCellLayout_alignRight {
+      text-align: right;
+    }
+
+    .fixedDataTableCellLayout_alignCenter {
+      text-align: center;
+    }
+
+    .fixedDataTableCellLayout_wrap1 {
+      display: table;
+    }
+
+    .fixedDataTableCellLayout_wrap2 {
+      display: table-row;
+    }
+
+    .fixedDataTableCellLayout_wrap3 {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .fixedDataTableCellLayout_columnResizerContainer {
+      position: absolute;
+      right: 0px;
+      width: 8px;
+      z-index: 1;
+      background-color: transparant;
+
+      .public_fixedDataTableCell_columnResizerKnob {
+        width: 8px;
+        background-color: var(--fill--info--solid);
+      }
+    }
+
+    .fixedDataTableCellLayout_columnResizerContainer:hover {
+      cursor: ew-resize;
+    }
+
+    .fixedDataTableCellLayout_columnResizerContainer:hover
+      .fixedDataTableCellLayout_columnResizerKnob {
+      visibility: visible;
+    }
+
+    .fixedDataTableCellLayout_columnResizerKnob {
+      position: absolute;
+      right: 0px;
+      visibility: hidden;
+      width: 4px;
+    }
+
+    .ScrollbarLayout_main {
+      background-color: var(--fill--primary);
+      border-color: var(--border--neutral);
+    }
+
+    .ScrollbarLayout_face {
+      // override awkward transition that makes the scrollbar look laggy when you "mousewheel" or drag
+      // clicking the track to jump the position won't animate now, but I think this is the better of the options
+      transition: none;
+    }
+
+    .public_fixedDataTable_header,
+    .public_fixedDataTable_scrollbarSpacer,
+    .public_fixedDataTable_header .public_fixedDataTableCell_main {
+      background: var(--fill--secondary);
+      border-color: var(--border--neutral);
+    }
+
+    .public_fixedDataTableRow_highlighted,
+    .public_fixedDataTableRow_highlighted .public_fixedDataTableCell_main {
+      background-color: transparent;
+    }
+
+    .public_fixedDataTableRow_main {
+      border-bottom: 1px solid var(--border--neutral);
+      background: var(--fill--primary);
+    }
+
+    .action-menu-icon {
+      height: 16px;
+      width: 16px;
+      color: var(--icon--primary);
+      cursor: pointer;
+      &:hover {
+        color: var(--icon--hover);
+      }
+    }
+
+    .datatype-menu-icon {
+      color: var(--icon--primary);
+      cursor: pointer;
+      &:hover,
+      :focus-visible {
+        color: var(--icon--hover);
+      }
+    }
+  }
+}

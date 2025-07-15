@@ -1,0 +1,138 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  .filterSelectMenu {
+    align-items: center;
+
+    &__labelWrapper {
+      height: 32px;
+      min-width: 160px;
+      padding: 4px 2px 4px 8px; // default styling adds a 6px left padding so this accounts for that
+      color: var(--text--faded);
+      border-radius: 4px;
+      font-size: 14px !important;
+      border: 1px solid var(--border--neutral--solid);
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+
+      &.--filtered {
+        border-color: var(--border--focused);
+        background-color: var(--fill--primary--hover);
+      }
+    }
+
+    &__label {
+      &__text {
+        display: flex;
+        align-items: center;
+
+        &.--filtered {
+          color: var(--text--brand);
+        }
+      }
+    }
+
+    &__menuSubHeader {
+      display: flex;
+      align-items: flex-start;
+
+      &:hover {
+        background-color: var(--fill--popover);
+      }
+
+      span {
+        width: 100%;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        border-top: 1px solid var(--border--neutral);
+      }
+    }
+
+    &__menuItem {
+      cursor: pointer;
+      user-select: none;
+      &.--transparent {
+        background-color: var(--fill--primary) !important;
+      }
+      &:hover {
+        background-color: var(--fill--primary--hover);
+      }
+
+      &.--chosen {
+        background-color: var(--fill--primary--selected);
+        &:hover {
+          background-color: var(--fill--primary--selected--hover);
+        }
+      }
+      &.--disabled {
+        color: var(--text--disabled);
+        background-color: var(--fill--primary);
+        &:hover {
+          background-color: var(--fill--primary);
+          &.--chosen {
+            background-color: var(--fill--primary);
+          }
+        }
+      }
+    }
+
+    &__downIcon {
+      width: 24px;
+      height: 24px;
+    }
+
+    &__checkbox {
+      display: flex;
+      height: 32px;
+      padding: 6px 16px;
+      flex-basis: 100%;
+
+      .field {
+        margin-top: 0 !important;
+        width: 100%;
+      }
+
+      span {
+        font-size: 14px !important;
+      }
+
+      .font-icon {
+        margin-right: 4px;
+      }
+    }
+    &__dragHandle {
+      height: 24px;
+      width: 29px;
+      margin-left: 4px;
+      margin-right: 8px;
+      color: var(--icon--primary);
+    }
+    &__dragTargetCls {
+      width: 95%;
+      height: 100%;
+    }
+    &__dragTargetHoverCls {
+      border-bottom: 1px solid var(--border--brand--solid);
+      width: 100%;
+    }
+    .ellipseLabel {
+      max-width: 180px;
+    }
+  }
+}

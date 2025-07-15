@@ -1,0 +1,71 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax="proto3";
+package plan.catalog;
+
+option java_package = "com.dremio.plan.serialization";
+option java_outer_classname = "PCatalog";
+
+option optimize_for = SPEED;
+
+
+message PTableMetadata {
+  oneof table_type {
+    PTableMetadataImpl impl = 1;
+  }
+}
+
+message PTableMetadataImpl {
+  bytes storage_plugin_id_bson = 1;
+  bytes dataset_config_bytes = 2;
+  PSplitsPointer splits_pointer = 3;
+  string user = 4;
+  repeated string primary_keys = 5;
+  string table_version_context_json = 6;
+}
+
+message PSplitsPointer {
+  oneof type {
+    PVersionedDataSetSplitPointer versioned_dataset = 1;
+    PMaterializedSplitsPointer materialized = 2;
+  }
+}
+
+message PVersionedDataSetSplitPointer {
+  repeated PPartitionChunk partition_chunks = 1;
+  bytes dataset_config_bytes = 2;
+}
+
+message PMaterializedSplitsPointer {
+  int64 split_version = 1;
+  repeated PPartitionChunk partition_chunks = 2;
+  int32 total_split_count = 3;
+}
+
+message PPartitionChunk {
+  //repeated PPartitionValue partition_values = 1;
+  int64 split_count = 2;
+  repeated PDataSplit dataset_splits = 3;
+  bytes extra_info = 4;
+}
+
+message PDataSplit {
+  //repeated PDatasetSplitAffinity dataset_split_affinities = 1;
+  int64 size_in_bytes = 2;
+  int64 record_count = 3;
+  bytes extra_info = 4;
+}
+

@@ -1,0 +1,182 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use "../../../themes/utilities";
+@import "../../styles/constants/index.scss";
+
+.btn {
+  align-items: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  height: 32px;
+  font-size: $font;
+  font-family: inherit;
+  justify-content: center;
+  min-width: 100px;
+  outline: 0;
+  padding: 0 8px;
+  position: relative;
+  transition: 300ms ease all;
+  white-space: nowrap;
+
+  &__primary {
+    &.--contained {
+      @extend .bg-brand-300;
+      &:hover {
+        border: none;
+        @extend .bg-brand-400;
+      }
+    }
+    @media (prefers-contrast: more) {
+      &.--contained {
+        background-color: var(--color--brand--500);
+        &:hover {
+          border: none;
+          background-color: var(--color--brand--600);
+        }
+      }
+    }
+
+    &.--outlined {
+      background-color: var(--fill--primary);
+      border: 1px solid var(--border--neutral--solid);
+      color: var(--text--primary);
+
+      img {
+        filter: invert(34%) sepia(21%) saturate(290%) hue-rotate(173deg)
+          brightness(88%) contrast(87%) !important;
+      }
+
+      &:hover {
+        background-color: var(--fill--secondary);
+      }
+
+      &.-noImgHover img {
+        filter: inherit !important;
+      }
+    }
+
+    &.--text {
+      background-color: transparent;
+      border: none;
+      color: var(--text--brand);
+      min-width: auto;
+      &:hover {
+        background-color: var(--fill--secondary);
+      }
+    }
+
+    &.--disabled {
+      background-color: var(--fill--disabled);
+      color: var(--text--disabled);
+      border: none;
+      opacity: 0.7;
+      pointer-events: none;
+
+      img {
+        filter: invert(34%) sepia(21%) saturate(290%) hue-rotate(173deg)
+          brightness(88%) contrast(87%) !important;
+      }
+    }
+  }
+
+  &__secondary,
+  &__default {
+    color: var(--text--faded);
+    border: 1px solid var(--border--neutral--solid);
+
+    &.--contained {
+      background-color: var(--fill--primary);
+      &:hover {
+        background-color: var(--fill--secondary);
+      }
+    }
+
+    &.--disabled {
+      background-color: var(--fill--disabled);
+      color: var(--text--disabled);
+      border: none;
+      opacity: unset;
+      pointer-events: none;
+    }
+
+    &.--text {
+      background-color: transparent;
+      border: none;
+      color: var(--text--faded);
+      min-width: auto;
+    }
+  }
+
+  &__warn {
+    border: 1px solid var(--fill--danger);
+
+    color: var(--fill--danger--solid);
+    &.--contained,
+    &.--text {
+      background-color: var(--fill--danger);
+    }
+
+    &.--disabled {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+
+  .btn__content {
+    align-items: center;
+    display: flex;
+    gap: 4px;
+    line-height: 28px;
+    position: relative;
+  }
+
+  .spinner {
+    animation-name: spin;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+
+    .icon {
+      block-size: 24px;
+      inline-size: 24px;
+    }
+  }
+}
+
+.dremio-dark {
+  .btn {
+    &__primary {
+      &.--contained {
+        @extend .bg-brand-200;
+        &:hover {
+          @extend .bg-brand-150;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

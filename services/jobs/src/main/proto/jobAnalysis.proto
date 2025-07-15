@@ -1,0 +1,115 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+package com.dremio.service.jobAnalysis.proto;
+
+option java_package = "com.dremio.service.jobAnalysis.proto";
+option optimize_for = SPEED;
+
+message SuccessorNodes {
+  repeated string successorId = 1;
+}
+
+message BaseMetrics {
+  required int64 ioWaitTime = 1;
+  required int64 peakMemory = 2;
+  required int64 processingTime = 3;
+  required int64 setupTime = 4;
+  required int64 recordsProcessed = 5;
+  required int64 numThreads = 6;
+  required int64 bytesProcessed = 7;
+  required int64 runTime = 8;
+  required int64 totalMemory = 9;
+  required int64 outputRecords = 10;
+  required int64 outputBytes = 11;
+}
+
+message ThreadData {
+  required string operatorId = 1;
+  required string operatorName = 2;
+  required int32  OperatorType = 3;
+  required int64 ioWaitTime = 4;
+  required int64 peakMemory = 5;
+  required int64 processingTime = 6;
+  required int64 setupTime = 7;
+  required int64 recordsProcessed = 8;
+  required int64 outputRecords = 9;
+  required int64 outputBytes = 10;
+}
+
+message MetricValue {
+  required int32 metricId = 1;
+  required string metricName = 2;
+  required int64 metricValue = 3;
+}
+
+message OperatorData {
+  enum OperatorObservationType {
+    HIGH_OPERATOR_SPAN = 0;
+    HIGH_OPERATOR_OVERHEAD = 1;
+  }
+  required string nodeId = 1;
+  required string operatorName = 2;
+  required int32 OperatorType = 3;
+  required BaseMetrics baseMetrics = 4;
+  required string mergeNodeName = 5;
+  required SuccessorNodes successorId = 6;
+  required string dataSetName = 7;
+  required string reflectionName = 8;
+  repeated OperatorObservationType operatorObservationType = 9;
+}
+
+message PhaseData {
+  enum PhaseObservationType {
+    HIGH_QUEUE_LOAD = 0;
+    HIGH_SLEEP_DURATION = 1;
+    HIGH_BLOCKED_TIME_ON_DOWNSTREAM = 2;
+  }
+  required string phaseId = 1;
+  required int64 processingTime = 2;
+  required int64 peakMemory = 3;
+  required int64 recordsProcessed = 4;
+  required int64 numThreads = 5;
+  repeated OperatorData operatorData = 6;
+  required int64 runTime = 7;
+  required int64 totalMemory = 8;
+  required int64 totalBufferForIncomingMemory = 9;
+  repeated PhaseObservationType phaseObservationType = 10;
+}
+
+message GraphNodeDetails {
+  required string nodeName = 1;
+  required SuccessorNodes successorId = 2;
+  required string mergeNodeName = 3;
+}
+
+message PhaseNode {
+  required string nodeId = 1;
+  required string phaseId = 2;
+  required string operatorName = 3;
+  required int32  OperatorType = 4;
+  required BaseMetrics baseMetrics = 5;
+  required string mergeNodeName = 6;
+  required SuccessorNodes successorId = 12;
+}
+
+message OperatorSpecificDetails {
+  required string FilePath = 1;
+  required int64 IoTime_ns = 2;
+  required int64 IoSize = 3;
+  required int64 offset = 4;
+  required string OperationType = 5;
+}

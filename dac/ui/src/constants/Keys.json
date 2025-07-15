@@ -1,0 +1,13 @@
+{
+  "ENTER": 13,
+  "BACKSPACE": 8,
+  "TAB": 9,
+  "LEFT": 37,
+  "RIGHT": 39,
+  "ESCAPE": 27,
+  "UP": 38,
+  "DOWN": 40,
+  "DELETE": 46,
+  "HOME": 36,
+  "END": 35
+}

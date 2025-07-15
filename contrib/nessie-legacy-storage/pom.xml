@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.dremio.contrib</groupId>
+    <artifactId>dremio-contrib-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>nessie-legacy-storage</artifactId>
+  <packaging>jar</packaging>
+  <name>Relocated Nessie Storage Classes</name>
+
+  <properties>
+    <!-- The last nessie version with the old storage model is 0.74.0.
+    Some upgrade code has to be able to migrate Nessie data from old Dremio SW
+    installations, which may still use old Nessie Storage formats (including the
+    so called "global state"). This module uses old Nessie artifacts for upgrade
+    purposed because the corresponding code no longer exists in current Nessie
+    versions. Those old Nessie classes are not expected to be shared with any
+    other Dremio SW modules in the "runtime" scope. The classes used in upgrade
+    tasks are relocated to ensure isolation.
+
+    Note that some of the Nessie "versioned" jars are used by Dremio modules in
+    the "test" scope without relocation and "nessie-bom" of the latest version is
+    imported in oss/pom.xml. -->
+    <nessie.oldstorage.version>0.74.0</nessie.oldstorage.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.projectnessie.nessie</groupId>
+        <artifactId>nessie-bom</artifactId>
+        <version>${nessie.oldstorage.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.projectnessie.nessie</groupId>
+      <artifactId>nessie-server-store</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectnessie.nessie</groupId>
+      <artifactId>nessie-versioned-persist-adapter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectnessie.nessie</groupId>
+      <artifactId>nessie-versioned-persist-serialize</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectnessie.nessie</groupId>
+      <artifactId>nessie-versioned-persist-store</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectnessie.nessie</groupId>
+      <artifactId>nessie-versioned-persist-non-transactional</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
+          <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+          <artifactSet>
+            <includes>
+              <include>org.projectnessie.nessie:*</include>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>org.projectnessie.</pattern>
+              <shadedPattern>com.dremio.legacy.org.projectnessie.</shadedPattern>
+            </relocation>
+          </relocations>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+          </transformers>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

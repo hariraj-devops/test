@@ -1,0 +1,210 @@
+#
+# Copyright (C) 2017-2019 Dremio Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+# Common dialog actions
+Common.Actions.Accept: Accept
+Common.Actions.Cancel: Cancel
+Common.Actions.OK: OK
+Common.Actions.Yes: "Yes"
+Common.Actions.Delete: "Delete"
+Common.Actions.BrowseContents: "Browse Contents"
+Common.Actions.Move: "Move"
+Common.Actions.MoveAnyway: "Move Anyway"
+Common.Actions.MakeCopy: "Make a Copy"
+Common.Actions.Rename: "Rename"
+Common.Actions.RenameAnyway: "Rename Anyway"
+Common.Actions.CopyPath: "Copy Path"
+Common.Actions.Details: "Details"
+Common.Actions.Edit: "Edit"
+Common.Actions.Enable: Enable
+Common.Actions.Disable: "Disable"
+Common.Actions.Save: "Save"
+Common.Actions.Append: Append
+Common.Actions.Overwrite: Overwrite
+Common.Actions.Create: Create
+Common.Actions.Continue: Continue
+Common.Actions.Restart: Restart
+Common.Actions.Back: Back
+Common.Actions.Add: Add
+Common.Actions.Confirm: Confirm
+Common.Actions.Close: Close
+Common.Actions.Discard: Discard
+Common.Actions.SaveContinue: Save and Continue
+Common.Actions.CreateJoin: Create Join
+Common.Actions.Done: Done
+
+# Common
+Common.Average: Average
+Common.Date: Date
+Common.Remove: Remove
+Common.More: More
+Common.Owner: Owner
+Common.Transfer: Transfer
+Common.Or: or
+Common.Name: Name
+Common.Download: Download
+Common.Enabled: Enabled
+Common.Disabled: Disabled
+Common.Size: Size
+Common.Unknown: Unknown
+Common.NA: N/A
+Common.Custom: Custom
+Common.Error: Error
+
+# Route leave warning dialog messages
+Common.RouteLeaveDialog.Title: Unsaved Changes
+Common.RouteLeaveDialog.Message: Are you sure you want to leave without saving changes?
+Common.RouteLeaveDialog.Actions.Leave: Leave
+Common.RouteLeaveDialog.Actions.Stay: Stay
+
+Common.Columns.Count: "{numColumns, plural, =0 {No columns} =1 {1 column} other {# columns}}"
+
+# Common error messages
+Common.Errors.Persists: If the problem persists, please contact Dremio support.
+Common.Errors.Unexpected: An unexpected error occurred.
+Common.Errors.Unexpexted.Request: An unexpected error occurred while processing this request.
+Common.Errors.404: The page you are looking for doesn’t exist.
+Common.Errors.UnexpectedError.Root: An unexpected error occurred when we tried to load the page.
+
+Common.History: History
+
+Common.Settings: Settings
+
+Common.LoadingMore: Loading more…
+Common.Created.Success: ‘{name}’ is created.
+Common.Updated.Success: ‘{name}’ is updated.
+Common.Deleted.Success: ‘{name}’ is deleted.
+NetworkConnectivity.Offline: Your internet connection appears to be offline.
+NetworkConnectivity.Unreachable: There was a problem communicating with Dremio. Please verify that you’re on a network that can reach {server_origin}.
+NetworkConnectivity.WebsocketFailure: There was a problem establishing a WebSocket connection with Dremio.
+
+# Autocomplete
+Autocomplete.UnnamedDerivedTable: Unnamed derived table
+
+Space.Delete: "Delete Space"
+Folder.Delete: "Delete Folder"
+Source.Delete: "Delete Source"
+File.Delete: "Delete File"
+Dataset.DeleteDataset: "Delete Dataset"
+Dataset.MoveDataset: "Move Dataset"
+Dataset.Actions.RemoveFormat: "Remove Format"
+Dataset.RenameDataset: "Rename Dataset"
+Delete.Confirmation: 'Are you sure you want to delete "{name}"?'
+Delete.Confirmation.Enter: Enter ‘{name}’ to confirm
+RemoveFormat.Confirmation: 'Are you sure you want to remove format for "{name}"?'
+Dataset.Name: "Dataset name..."
+Dataset.Actions.ExploreGraph: "Explore Data Graph"
+Dataset.Actions.Lineage: "Open Lineage"
+Dataset.Actions.Query: "Query"
+Dataset.Actions.GoTo.Dataset: "Go to Dataset"
+Dataset.Actions.GoTo.Table: "Go to Table"
+Dataset.Actions.OpenDetails: "Open Details Panel"
+
+# Acceleration
+Acceleration.Footprint: Footprint
+
+# App info
+About.Dremio: About Dremio
+About.Tabs.Build: Build Information
+About.Tabs.Usage: Cluster Usage Data
+App.Dremio: Dremio
+App.DremioBeta: Dremio (beta)
+App.ProductionWarning: Not for production use
+App.Copyright: Copyright © 2017-2025 Dremio Corporation
+App.Build: Build
+App.Edition: Edition
+App.BuildTime: Build Time
+App.ChangeHash: Change Hash
+App.ChangeTime: Change Time
+App.UniqueUsers: Unique Users
+App.JobsExecuted: Jobs Executed
+
+# Create folder
+Create.Folder: Create folder
+Add.To: Add to...
+Folder.Name: Folder name
+
+# Catalog Data/Commit/Tag Tables
+History.Catalog.Author: "Author"
+History.Catalog.TagName: "Tag Name"
+History.Catalog.CommitID: "Commit ID"
+History.Catalog.CommitMessage: "Commit Message"
+History.Catalog.CommitTime: "Commit Time"
+History.Catalog.GoToData: "Go to data"
+
+# Delete Rule Dialog
+Admin.Rules.DeleteRule: Delete Rule
+Admin.Rules.DeleteRuleWarning: Are you sure you want to delete {name}?
+
+# SQLScriptsLeaveTabDialog
+Dialog.LeaveTab.Title: Confirm Navigation
+Dialog.LeaveTab.Description: All queries have not yet been submitted. The pending queries will be canceled if you navigate away from the current tab.<br></br><br></br>Do you want to leave this tab?
+
+# SQLScriptsDeletedDialog
+Dialog.DeletedScript.Title: This script has been deleted
+Dialog.DeletedScript.Description: The script you were editing has been deleted by another user. If you'd like to keep your changes, you can save the below SQL as a new script.
+Dialog.DeletedScript.CancelAction: Discard
+Dialog.DeletedScript.CopyAction: Copy SQL
+Dialog.DeletedScript.SaveScriptAs: Save script as
+
+# Scripts
+Script.Rename: Rename Script
+Script.Name: Script Name
+Script.CloseTab.Disabled.Tooltip: Open a new tab or an existing script to close this tab.
+
+# Job Details
+JobDetails.SQL.Submitted: Submitted SQL
+JobDetails.SQL.Graph: Dataset Graph
+
+#Forms
+FormControl.SecretPicker.Label: Secret Store
+FormControl.Tab.General: General
+FormControl.Label.Key: Key
+FormControl.Label.Value: Value
+FormControl.AdvancedOptions.Label: Advanced options
+
+Common.Range.LastHour: Last hour
+Common.Range.Last6Hours: Last 6 hours
+Common.Range.Last24Hours: Last 24 hours
+Common.Range.Last3Days: Last 3 days
+Common.Range.Last7Days: Last 7 days
+Common.Range.Last30Days: Last 30 days
+Common.Range.ALL: All
+
+#Sources
+Sources.Settings.SecretStore.ProviderLabel.DREMIO: Dremio
+Sources.Settings.SecretStore.ProviderLabel.NONE: Select a provider
+Sources.Settings.SecretStore.Placeholder: Insert your private key
+
+AccountSettings.AppearancePicker.Common.Description: Any changes here will only apply to your account. You may need to refresh your browser for changes to take effect.
+AccountSettings.AppearancePicker.Title: Theme
+AccountSettings.AppearancePicker.Description: Choose between light, dark, or device-responsive themes for your Dremio experience.
+AccountSettings.AppearancePicker.ThemeTitle.LIGHT: Light
+AccountSettings.AppearancePicker.ThemeTitle.DARK: Dark
+AccountSettings.AppearancePicker.ThemeTitle.AUTO_SYSTEM: Device-responsive
+
+Common.ModifierKey.CMD.Short: Cmd
+Common.ModifierKey.CMD.Long: Command
+Common.ModifierKey.CMD.Symbol: ⌘
+Common.ModifierKey.CMD.Combo: ⌘{key}
+Common.ModifierKey.CTRL.Short: Ctrl
+Common.ModifierKey.CTRL.Long: Control
+Common.ModifierKey.CTRL.Symbol: ^
+Common.ModifierKey.CTRL.Combo: Ctrl + {key}
+
+User.Unavailable.Title: Unavailable
+User.Unavailable.Description: Details for this user could not be found. They may have been deleted or removed from the system.

@@ -1,0 +1,138 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .sqlScripts {
+    padding: 0 !important;
+    &__dropdown {
+      &__disabled {
+        background-color: inherit !important;
+      }
+    }
+
+    &__subHeading {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding-right: 8px;
+
+      .dropdownMenu {
+        padding-right: 8px;
+
+        &__content {
+          &:hover {
+            color: var(--text--brand);
+          }
+        }
+      }
+    }
+
+    &__empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 32px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .MuiList-root {
+      overflow-y: auto !important;
+      width: 100%;
+    }
+
+    &__menu-item {
+      border-bottom: 1px solid var(--border--neutral);
+      background-color: var(--fill--primary);
+      height: 48px !important;
+      display: flex;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+      flex-direction: row;
+
+      &.--selected {
+        .scriptName {
+          font-weight: 600;
+        }
+      }
+
+      &__leftContent {
+        display: flex;
+        align-items: center;
+        width: calc(100% - 24px);
+      }
+
+      &__nameContent {
+        display: flex;
+        flex-direction: column;
+        padding-left: 12px;
+        padding-right: 4px;
+        width: calc(100% - 24px);
+
+        > div {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .scriptName {
+          font-size: 14px;
+          color: var(--text--primary);
+        }
+        .scriptCreator {
+          font-size: 12px;
+          color: var(--icon--primary);
+        }
+      }
+
+      &__leftContent,
+      &__nameContent {
+        &.--with-checkbox {
+          width: 100%;
+          min-width: 0;
+        }
+      }
+
+      &__actions {
+        .settings-button {
+          border: none;
+          background-color: transparent;
+          padding: 0;
+        }
+
+        dremio-icon {
+          height: 24px;
+          width: 24px;
+          color: var(--icon--primary);
+        }
+      }
+    }
+  }
+
+  .menu-item-inner {
+    &.--delete {
+      color: var(--fill--danger--solid);
+    }
+
+    label {
+      height: 100%;
+      padding-inline: var(--dremio--spacing--05);
+      display: flex;
+      align-items: center;
+    }
+  }
+}

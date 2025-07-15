@@ -1,0 +1,182 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  .explore-info-header {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 7px;
+    height: 100%;
+    width: 100%;
+
+    .cur-link {
+      color: #b3b3b3;
+    }
+
+    .title-wrap {
+      font-size: 11px;
+
+      .datasetItemLabel-item {
+        &:hover {
+          background-color: var(--fill--primary);
+        }
+
+        .info-icon > dremio-icon {
+          margin-right: var(--dremio--spacing--05);
+        }
+      }
+    }
+
+    .toogler {
+      &.info-button {
+        width: 50px;
+        font-size: 18px;
+      }
+    }
+
+    .dropdown-for-actions {
+      right: 452px;
+      top: 24px;
+    }
+
+    .setting-item {
+      width: 55px;
+      height: 27px;
+      margin-right: 0;
+      background-color: #efefef;
+
+      &:hover {
+        background-color: darken(#efefef, 10%);
+      }
+
+      .fa-cog {
+        font-size: 19px;
+        color: #000;
+      }
+
+      .fa-angle-down {
+        font-size: 19px;
+        right: 3px;
+        position: relative;
+      }
+    }
+
+    .info-button {
+      border: 1px solid #ccc;
+      width: 90px;
+      height: 28px;
+      outline: none;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #efefef;
+      font-size: 14px;
+
+      &.blue-button {
+        background-color: #0094fb;
+        color: #fff;
+        border-color: #0094fb;
+
+        &:hover {
+          background-color: darken(#0094fb, 10%);
+        }
+      }
+
+      &:hover {
+        background-color: darken(#efefef, 10%);
+      }
+    }
+
+    .right-part {
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+      gap: 6px;
+
+      .preview-button {
+        margin-right: 5px;
+      }
+
+      .divider {
+        background-color: #d9d9d9;
+        width: 1px;
+        height: 20px;
+        margin: 0 8px 0 4px;
+      }
+    }
+
+    .prev-link {
+      color: blue;
+      cursor: pointer;
+    }
+
+    .flexbox-truncate-text-fix {
+      // we should apply min-width for flexbox child to work truncation correctly. See https://css-tricks.com/flexbox-truncated-text/
+      min-width: 0;
+    }
+
+    .title-wrap {
+      .flexbox-truncate-text-fix;
+      .copy-button {
+        dremio-icon {
+          inline-size: 20px;
+          block-size: 20px;
+          margin-right: 0;
+        }
+        padding: 0 var(--dremio--spacing--05);
+        opacity: 0;
+      }
+      &:hover {
+        .copy-button {
+          opacity: 1;
+        }
+      }
+    }
+
+    [data-qa="Graph"] img {
+      filter: grayscale(1) contrast(0);
+    }
+
+    .page-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      color: var(--text--primary);
+
+      &.--untitledScript {
+        color: var(--color--neutral--200);
+      }
+    }
+    .dataset-edited {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text--primary);
+    }
+
+    .referenceTag {
+      color: var(--text--brand);
+      display: inline-flex;
+      min-width: 0;
+      max-width: 100px;
+      vertical-align: middle;
+      padding-left: 2px;
+    }
+  }
+}

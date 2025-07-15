@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier"
+  ],
+  "plugins": ["stylelint-use-logical-spec"],
+  "rules": {
+    "liberty/use-logical-spec": true,
+    "custom-property-empty-line-before": null,
+    "custom-property-pattern": null,
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": null
+  },
+  "ignoreFiles": ["dist-themes/**/*", "themes/**/*.woff2"]
+}

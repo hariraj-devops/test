@@ -1,0 +1,90 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.dremio.dac.service.errors;
+
+import com.dremio.dac.explore.model.DatasetSummary;
+import com.dremio.dac.model.job.QueryError;
+import com.dremio.service.job.proto.JobId;
+import com.dremio.service.job.proto.SessionId;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+
+/** Exception for invalid queries */
+public class InvalidQueryException extends IllegalArgumentException {
+  private static final long serialVersionUID = 1L;
+
+  private final Details details;
+
+  public InvalidQueryException(Details details, Throwable cause, String message) {
+    super(message, cause);
+    this.details = details;
+  }
+
+  public Details getDetails() {
+    return details;
+  }
+
+  /** Basic information needed to populate the explore page to retry a failed initial preview. */
+  public static final class Details {
+    private final String sql;
+    private final List<String> context;
+    private final List<QueryError> errors;
+    private final DatasetSummary datasetSummary;
+    private final JobId jobId;
+    private final SessionId sessionId;
+
+    @JsonCreator
+    public Details(
+        @JsonProperty("sql") String sql,
+        @JsonProperty("context") List<String> context,
+        @JsonProperty("errors") List<QueryError> errors,
+        @JsonProperty("datasetSummary") DatasetSummary datasetSummary,
+        @JsonProperty("jobId") JobId jobId,
+        @JsonProperty("sessionId") SessionId sessionId) {
+      this.sql = sql;
+      this.context = context;
+      this.errors = errors;
+      this.datasetSummary = datasetSummary;
+      this.jobId = jobId;
+      this.sessionId = sessionId;
+    }
+
+    public String getSql() {
+      return sql;
+    }
+
+    public List<String> getContext() {
+      return context;
+    }
+
+    public List<QueryError> getErrors() {
+      return errors;
+    }
+
+    public DatasetSummary getDatasetSummary() {
+      return datasetSummary;
+    }
+
+    public JobId getJobId() {
+      return jobId;
+    }
+
+    public SessionId getSessionId() {
+      return sessionId;
+    }
+  }
+}

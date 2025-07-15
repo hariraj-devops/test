@@ -1,0 +1,121 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.layout {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  overflow: auto;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.left-column {
+  width: 100%;
+  max-width: calc(100vw - 385px - 64px);
+  border-right: 1px solid var(--border--neutral);
+}
+
+.left-column__collapsed-right-section {
+  max-width: calc(100vw - 37px - 64px);
+}
+
+.right-column {
+  width: 384px;
+}
+
+.dataset-wrapper {
+  padding: 0 var(--dremio--spacing--1);
+
+  & > div {
+    padding-right: var(--dremio--spacing--1);
+  }
+}
+
+.dataset-wrapper-overlay {
+  & > div > div > div:nth-child(3) {
+    margin-bottom: var(--dremio--spacing--1);
+  }
+}
+
+.sections-container {
+  .tab-wrapper {
+    width: calc(384px - 64px - 1px);
+  }
+}
+
+.tab-wrapper-panel {
+  width: calc(300px - 64px - 1px);
+
+  :global {
+    input {
+      width: 280px;
+    }
+  }
+}
+
+.collapsed-right-section {
+  margin-top: var(--dremio--spacing--105);
+  min-width: 36px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: var(--dremio--font-size--lg);
+  padding: var(--dremio--spacing--105);
+  padding-right: 0;
+  border-bottom: 1px solid var(--border--neutral);
+}
+
+.tags {
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.editor {
+  max-height: 550px;
+  overflow-y: scroll;
+}
+
+.datasetOverviewContainer {
+  border-bottom: 1px solid var(--border--neutral);
+}
+
+.collapsibleBodyOverlay {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.noColumns {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: var(--dremio--font-size--default);
+  color: var(--text--faded);
+  height: 100%;
+}
+
+:global {
+  .dremioContent__main .view-state-wrapper .CodeMirror .editor-preview p {
+    max-width: none;
+  }
+}

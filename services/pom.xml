@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.dremio</groupId>
+    <artifactId>dremio-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <groupId>com.dremio.services</groupId>
+  <artifactId>dremio-services-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Services</name>
+
+  <modules>
+    <module>accelerator</module>
+    <module>accelerator-api</module>
+    <module>arrow-flight</module>
+    <module>arrow-flight-common</module>
+    <module>authenticator</module>
+    <module>base-rpc</module>
+    <module>catalog</module>
+    <module>catalog-api</module>
+    <module>command-pool</module>
+    <module>configuration</module>
+    <module>coordinator</module>
+    <module>credentials</module>
+    <module>datastore</module>
+    <module>distributed-plan-cache</module>
+    <module>embedded-catalog</module>
+    <module>exec-selector</module>
+    <module>executorservice</module>
+    <module>fabric-rpc</module>
+    <module>functions</module>
+    <module>grpc</module>
+    <module>hadoopcredentials</module>
+    <module>jobcounts</module>
+    <module>jobresults</module>
+    <module>jobs</module>
+    <module>jobtelemetry</module>
+    <module>maestro</module>
+    <module>namespace</module>
+    <module>nessie-grpc</module>
+    <module>nessie-metadata-cache</module>
+    <module>nessie-proxy</module>
+    <module>nessie-restjavax</module>
+    <module>nessie-storage-upgrade</module>
+    <module>nessie-validation</module>
+    <module>node-metrics</module>
+    <module>optimization-api</module>
+    <module>options</module>
+    <module>orphanage</module>
+    <module>orphanagecleaner</module>
+    <module>partition-stats</module>
+    <module>pubsub-api</module>
+    <module>pubsub-nats</module>
+    <module>reindexer</module>
+    <module>resourcescheduler</module>
+    <module>scheduler</module>
+    <module>scripts</module>
+    <module>spill</module>
+    <module>sqlrunner</module>
+    <module>statistics</module>
+    <module>sysflight</module>
+    <module>systemicebergtablesmaintainer</module>
+    <module>telemetry-api</module>
+    <module>telemetry-impl</module>
+    <module>telemetry-utils</module>
+    <module>tokens</module>
+    <module>transientstore</module>
+    <module>userpreferences</module>
+    <module>users</module>
+    <module>usersessions</module>
+  </modules>
+</project>

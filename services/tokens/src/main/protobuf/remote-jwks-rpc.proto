@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+option java_package = "com.dremio.service.tokens.proto";
+option optimize_for = SPEED;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/empty.proto";
+
+package com.dremio.service.tokens;
+
+service RemoteJWKS {
+  rpc GetPublicJWKS(google.protobuf.Empty) returns (GetPublicJWKSResponse);
+}
+
+message GetPublicJWKSResponse {
+  repeated JWK keys = 1;
+}
+
+// Ref: https://datatracker.ietf.org/doc/html/rfc7517#section-4
+message JWK {
+  string kid = 1;
+  string kty = 2;
+  string use = 3;
+  repeated string key_ops = 4;
+  string alg = 5;
+
+  // X.509 URL
+  optional string x5u = 6;
+
+  // X.509 certificate chain
+  repeated string x5c = 7;
+
+  // X.509 certificate SHA-1 thumbprint
+  optional string x5t = 8;
+
+  // X.509 cert SHA-256 thumbprint
+  optional string x5t_s256 = 9;
+
+  oneof public_key_type {
+    PublicECKey ec_key = 10;
+  }
+}
+
+message PublicECKey {
+  string crv = 1;
+  string x = 2;
+  string y = 3;
+}

@@ -1,0 +1,85 @@
+.font-default {
+  font-family: var(--font-family--default);
+  font-feature-settings:
+    "calt" on,
+    "cv08" on;
+}
+.font-mono {
+  font-family: var(--font-family--mono);
+  font-feature-settings: "zero" on;
+  font-variant-ligatures: none;
+  font-weight: 400;
+}
+
+.text-sm {
+  font-size: calc(12rem / 14);
+}
+
+.text-base,
+.text-md {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.text-lg {
+  font-size: calc(16rem / 14);
+}
+
+.text-xl {
+  font-size: calc(18rem / 14);
+}
+
+.text-light {
+  font-weight: 300;
+}
+
+.text-normal {
+  font-weight: 400;
+}
+
+.text-medium {
+  font-weight: 500;
+}
+
+.text-semibold {
+  font-weight: 600;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.truncate {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.text-left {
+  text-align: start;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: end;
+}
+
+.text-error {
+  color: var(--fill--danger--solid);
+}
+
+.text-disabled {
+  color: var(--text--disabled) !important;
+}
+
+.text-primary {
+  color: var(--text--primary);
+}

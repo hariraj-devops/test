@@ -1,0 +1,148 @@
+.HeaderButtonAddActions-module__headerButtons__plusIcon___wxZWV {
+    color: #1e88e5 !important;
+}
+.finder-nav-item a.finder-nav-item-link.active {
+    background-color: #2196f314;
+    font-weight: 600;
+}
+
+element.style {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    font-weight: 500;
+}
+.link, a {
+    color: var(--text--link);
+    cursor: pointer;
+    outline: 0;
+    text-decoration: none;
+    color: #50586c;
+}
+
+.dremio-button {
+    border-color: transparent;
+    min-width: 100px;
+    transition: background 75ms ease-in-out, color 75ms ease-in-out;
+    background: #1e88e5;
+}
+
+
+:root {
+    --color--brand--25: #2196f314;
+    --color--brand--50: #2196f314;
+    --color--brand--75: #2196f314;
+    --color--brand--100: #1e88e5;
+    --color--brand--150: #1e88e5;
+    --color--brand--200: #1e88e5;
+    --color--brand--250: #1e88e5;
+    --color--brand--300: #1e88e5;
+    --color--brand--400: #1e88e5;
+    --color--brand--450: #1e88e5;
+    --color--brand--500: #1e88e5;
+    --color--brand--600: #1e88e5;
+    --color--brand--700: #1e88e5;
+    --color--brand--800: #1E88EC;
+    --color--neutral--25: var(--color--gray--25);
+    --color--neutral--50: var(--color--gray--50);
+    --color--neutral--75: var(--color--gray--75);
+    --color--neutral--100: var(--color--gray--100);
+    --color--neutral--150: var(--color--gray--150);
+    --color--neutral--200: var(--color--gray--200);
+    --color--neutral--300: var(--color--gray--300);
+    --color--neutral--500: var(--color--gray--500);
+    --color--neutral--400: var(--color--gray--400);
+    --color--neutral--600: var(--color--gray--600);
+    --color--neutral--700: var(--color--gray--700);
+    --color--neutral--800: var(--color--gray--800);
+    --color--neutral--900: var(--color--gray--900);
+    --color--danger--50: var(--color--red--50);
+    --color--danger--200: var(--color--red--200);
+    --color--danger--300: var(--color--red--300);
+    --color--danger--400: var(--color--red--400);
+    --color--danger--500: var(--color--red--500);
+    --color--danger--700: var(--color--red--700);
+    --color--warning--50: var(--color--orange--50);
+    --color--warning--150: var(--color--orange--150);
+    --color--warning--200: var(--color--orange--200);
+    --color--warning--900: var(--color--orange--900);
+    --color--success--50: var(--color--green--50);
+    --color--success--200: var(--color--green--200);
+    --color--success--300: var(--color--green--300);
+    --color--success--700: var(--color--green--700);
+    --color--info--50: var(--color--blue--50);
+    --color--info--300: var(--color--blue--300);
+    --color--info--400: var(--color--blue--400);
+    --color--info--700: #1e88e5;
+}
+:root {
+    --color--cyan--25: #2196f314;
+    --color--cyan--50: #2196f314;
+    --color--cyan--75: #2196f314;
+    --color--cyan--100: #2196f314;
+    --color--cyan--150: #1e88e5;
+    --color--cyan--200: #1e88e5;
+    --color--cyan--250: #1e88e5;
+    --color--cyan--300: #1e88e5;
+    --color--cyan--400: #1e88e5;
+    --color--cyan--450: #1e88e5;
+    --color--cyan--500: #1e88e5;
+    --color--cyan--600: #1e88e5;
+    --color--cyan--700: #1e88e5;
+    --color--cyan--800: #1e88e5;
+    --color--gray--25: #fbfbfb;
+    --color--gray--50: #f6f7f8;
+    --color--gray--75: #eeeff1;
+    --color--gray--100: #e4e6e9;
+    --color--gray--150: #d2d6da;
+    --color--gray--200: #b0b7bf;
+    --color--gray--300: #939da7;
+    --color--gray--400: #7b8288;
+    --color--gray--500: #505862;
+    --color--gray--600: #454c52;
+    --color--gray--700: #32383e;
+    --color--gray--800: #202124;
+    --color--gray--900: #101214;
+    --color--red--50: #fdeded;
+    --color--red--200: #ff7575;
+    --color--red--300: #ff5252;
+    --color--red--400: #ca3f32;
+    --color--red--500: #ad3021;
+    --color--red--700: #3b2626;
+    --color--orange--50: #fff4e5;
+    --color--orange--150: #ffb85d;
+    --color--orange--200: #ffa940;
+    --color--orange--900: #443728;
+    --color--green--50: #edf7ed;
+    --color--green--200: #8bd282;
+    --color--green--300: #5abd4a;
+    --color--green--700: #293a2a;
+    --color--blue--50: #e9f5f9;
+    --color--blue--300: #5ab3ff;
+    --color--blue--400: #0684f9;
+    --color--blue--700: #1e88e5;
+    --color--navy--500: #485767;
+    --color--navy--700: #2a394a;
+    --color--indigo--300: #8ca4e9;
+    --color--indigo--500: #6c6da4;
+    --color--indigo--700: #47498d;
+    --color--indigo-vivid--500: #5a5dee;
+    --color--orange-warm--300: #f79472;
+    --color--violet-warm--500: #9a51bf;
+    --color--red-cool--500: #d02362;
+    --color--blue-warm--300: #3b84cb;
+    --color--magenta--300: #cc88ae;
+    --color--mint--300: #1e88e5;
+}
+
+
+.sideNav {
+    background-color: var(--fill--nav--sonar);
+    display: flex;
+    flex-direction: column;
+    width: 64px;
+    display: none !important; 
+}
+.intercom-lightweight-app-launcher {
+   display: none !important;
+}

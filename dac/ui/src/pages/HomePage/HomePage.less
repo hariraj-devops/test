@@ -1,0 +1,85 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/variables.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  #home-page {
+    .homePageBody {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      .homePageLeftTreeDiv {
+        display: flex;
+        flex: 1;
+        max-height: calc(100% - 48px);
+        overflow-x: auto;
+
+        &.--withoutSearch {
+          max-height: 100%;
+        }
+        &.--withNavCrumbs {
+          max-height: calc(100% - 45px);
+        }
+      }
+    }
+
+    .home-container {
+      margin: 5px 0;
+    }
+    .h-item {
+      &.active {
+        background: var(--fill--warning);
+      }
+    }
+    .main-info {
+      display: flex;
+      min-width: 500px;
+      overflow: hidden;
+      height: 100%;
+      flex: 1;
+      .table {
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
+      .home-table-viewer {
+        transition: width 0.25s linear;
+        &.home-table-viewer-full {
+          width: ~"calc(100% + @{pull-out-right-tree-width})";
+        }
+        &.home-table-viewer-short {
+          width: 100%;
+        }
+      }
+
+      .datasetItemLabel {
+        .TextHighlight {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+    // Align the table header height for table on the homepage
+    // For example, the table that shows the list of data lakes / external sources.
+    .ReactVirtualized__Table__headerRow {
+      height: 39px !important;
+    }
+  }
+}

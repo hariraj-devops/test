@@ -1,0 +1,108 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@use "@dremio/design-system/scss/variables/index" as variables;
+@use "@dremio/design-system/scss/utility-classes/index";
+
+.dremio-auto-system {
+  @supports not (prefers-color-scheme: light) {
+    @include variables.light;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    @include variables.light;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    @include variables.dark;
+    color-scheme: dark;
+  }
+}
+
+.dremio-light {
+  @include variables.light;
+  color-scheme: light;
+}
+
+.dremio-dark {
+  @include variables.dark;
+  color-scheme: dark;
+}
+
+// Don't display the #page-top div if no children are rendered
+#page-top:empty {
+  display: none;
+}
+
+.treeNode {
+  @for $i from 0 through 10 {
+    &[aria-level="#{$i}"] {
+      padding-left: #{$i * 12}px;
+    }
+  }
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+
+  &__children {
+    margin-inline-start: 0.5em;
+  }
+
+  [role="treeitem"] {
+    content-visibility: auto;
+
+    contain-intrinsic-size: auto 2.285em;
+    min-height: 2.285em;
+
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: var(--dremio--spacing--05);
+    user-select: none;
+
+    transition: background 100ms;
+
+    .catalog-treeitem__actions {
+      display: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--bg--hovered, inherit);
+      color: var(--text--hovered, inherit);
+
+      .catalog-treeitem__actions {
+        display: flex;
+        color: var(--icon--primary);
+      }
+    }
+
+    &:focus-within {
+      .catalog-treeitem__actions {
+        display: flex;
+        color: var(--icon--primary);
+      }
+    }
+  }
+
+  @for $i from 0 through 10 {
+    [aria-level="#{$i}"] {
+      margin-inline-start: #{$i * 12}px;
+    }
+  }
+}

@@ -1,0 +1,126 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "../../styles/constants/index.scss";
+
+.selectRoot {
+  // Naming this as selectRoot to avoid conflicts with select
+  [role="combobox"],
+  [role="breadcrumb"] {
+    .MuiSelect-select {
+      @include input-size();
+    }
+    height: 32px !important; //Was 34px before mui upgrade
+    border: none !important; //Fieldset controls border now.
+    letter-spacing: normal !important;
+    font-family: var(--dremio--font-family) !important;
+
+    //There was no hover style prior to mui upgrade
+    fieldset {
+      border: 1px solid var(--border--neutral--solid);
+    }
+    &:hover {
+      fieldset {
+        border-color: var(--border--hover) !important;
+      }
+    }
+    &:focus,
+    &.Mui-focused {
+      fieldset {
+        border-color: var(--border--focused) !important;
+        border-width: 1px !important;
+      }
+    }
+    padding-top: 1px;
+    padding-bottom: 1px;
+
+    &.Mui-disabled {
+      &,
+      &:hover {
+        fieldset {
+          border-color: var(--border--neutral--solid) !important;
+        }
+      }
+      background-color: var(--color--neutral--75) !important;
+      color: var(--text--disabled) !important;
+      select {
+        background-color: var(--color--neutral--75) !important;
+      }
+      .MuiSelect {
+        &-icon {
+          path {
+            fill: var(--icon--disabled);
+          }
+        }
+        &-select {
+          background-color: var(--fill--disabled) !important;
+          -webkit-text-fill-color: var(--text--disabled);
+        }
+      }
+    }
+  }
+
+  .MuiSelect-select {
+    padding-left: 0 !important;
+  }
+
+  .MuiSelect-icon {
+    top: unset;
+    path {
+      fill: var(--icon--primary);
+    }
+  }
+
+  .MuiInputBase-root {
+    display: flex;
+    background-color: var(--fill--primary);
+  }
+
+  .MuiInput-underline:before,
+  .MuiInput-underline:after {
+    border-bottom: none !important;
+  }
+
+  &__menu {
+    max-height: 300px !important;
+    #breadcrumb-icon {
+      block-size: 24px;
+      min-width: 24px;
+    }
+  }
+
+  &__option {
+    height: 32px;
+    font-size: 14px !important;
+    &.--selected {
+      background-color: var(--fill--primary--selected) !important;
+    }
+  }
+
+  &__label {
+    padding-top: 4px;
+  }
+
+  [role="breadcrumb"] {
+    height: 24px !important;
+    .MuiSelect-select {
+      height: 24px !important;
+      border: none !important;
+      #breadcrumb-text {
+        max-width: 102px;
+      }
+    }
+  }
+}

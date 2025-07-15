@@ -1,0 +1,6 @@
+<svg id="engine-state/recovering" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.875 12.125C2.875 7.01637 7.01637 2.875 12.125 2.875C17.2336 2.875 21.375 7.01637 21.375 12.125C21.375 16.0055 18.9855 19.3279 15.5976 20.7011" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11.75 5.75C12.1642 5.75 12.5 6.12453 12.5 6.58654L12.5 12.1635C12.5 12.6255 12.1642 13 11.75 13C11.3358 13 11 12.6255 11 12.1635L11 6.58654C11 6.12453 11.3358 5.75 11.75 5.75Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 12.25C15.5 12.6642 15.1642 13 14.75 13H11.75C11.3358 13 11 12.6642 11 12.25C11 11.8358 11.3358 11.5 11.75 11.5H14.75C15.1642 11.5 15.5 11.8358 15.5 12.25Z" fill="currentColor"/>
+<path d="M15.5 18.5V21.4C15.5 21.4552 15.5448 21.5 15.6 21.5H18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

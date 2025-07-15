@@ -1,0 +1,109 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.dataset-summary {
+  &-container {
+    background: var(--fill--popover);
+    display: flex;
+    padding: var(--dremio--spacing--2) 0;
+    flex-direction: column;
+    box-shadow: var(--dremio--shadow--layer-1);
+    font-size: var(--dremio--font-size--default);
+    width: 300px;
+  }
+  &-wiki-container {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--dremio--font-size--default);
+    width: 368px;
+    padding: var(--dremio--spacing--1) 0 0 var(--dremio--spacing--1);
+  }
+  &-wiki-container-panel {
+    padding: var(--dremio--spacing--1) var(--dremio--spacing--1) 0
+      var(--dremio--spacing--1);
+    width: 100%;
+  }
+  &-top-section {
+    padding: 0 var(--dremio--spacing--2);
+    border-bottom: 1px solid var(--border--neutral);
+  }
+  &-sqleditor {
+    border-bottom: none;
+  }
+  &-tagsWrapper {
+    width: 100%;
+    white-space: nowrap;
+  }
+  &-tags-stats {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--dremio--spacing--2);
+  }
+  &-button-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--dremio--spacing--1);
+  }
+  &-open-details-button {
+    display: flex;
+    width: 100%;
+    font-style: normal;
+    font-weight: 500;
+    font-size: var(--dremio--font-size--default);
+    line-height: 20px;
+    text-decoration: none !important;
+    color: var(--icon--hover);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: var(--dremio--spacing--05);
+    border-radius: var(--dremio--radius--1);
+    &:hover {
+      background-color: var(--fill--primary--hover);
+    }
+  }
+  &-open-details-icon {
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+  }
+
+  &-dataset-path {
+    display: flex;
+    align-items: center;
+
+    .hidden-button {
+      height: 0;
+      width: 0;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+    }
+
+    .copy-button {
+      margin-bottom: var(--dremio--spacing--1);
+      opacity: 0;
+    }
+
+    &:hover,
+    &:focus-within {
+      .copy-button {
+        opacity: 1;
+      }
+    }
+  }
+}

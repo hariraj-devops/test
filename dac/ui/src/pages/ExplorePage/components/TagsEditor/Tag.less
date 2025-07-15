@@ -1,0 +1,87 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@_horizontal-padding: 10px;
+@_button-padding: 4px;
+@_border-radius: 4px;
+
+// mixins -------------------------------------------
+
+.hover() {
+  &:hover {
+    background: var(--fill--hover--primary--selected);
+  }
+}
+
+.border-right-radius(@radius) {
+  border-top-right-radius: @radius;
+  border-bottom-right-radius: @radius;
+}
+
+// End of mixins -------------------------------------
+
+.text-wrapper {
+  display: flex;
+  align-items: center;
+  padding-left: @_horizontal-padding;
+  padding-right: @_horizontal-padding;
+  max-width: 150px;
+  border-radius: @_border-radius; // needed for hover state
+}
+
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag {
+  border-radius: @_border-radius;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--fill--primary--selected);
+  border: 1px solid var(--border--neutral);
+}
+
+.deletable .text-wrapper {
+  padding-right: @_button-padding; // need apply it here for good hover view
+  .border-right-radius(0); // reset radius, as there is a delete button on the right
+}
+
+.clickable {
+  cursor: pointer;
+
+  .text-wrapper {
+    .hover();
+  }
+}
+
+.delete-button {
+  cursor: pointer;
+  .border-right-radius(@_border-radius); // needed for hover state
+
+  box-sizing: content-box;
+  width: 14px; // icon size
+  color: var(--icon--primary);
+  padding-right: @_button-padding;
+
+  .hover();
+}
+
+.selected {
+  background: var(--fill--tertiary);
+}

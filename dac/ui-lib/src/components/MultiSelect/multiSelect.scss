@@ -1,0 +1,146 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "../../styles/constants/index.scss";
+.multiSelect {
+  width: 540px;
+  &__value {
+    @include input-size();
+    height: unset !important;
+    min-height: 32px;
+    justify-content: space-between;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+
+    &:hover {
+      border: 1px solid var(--border--hover) !important;
+    }
+
+    &:focus-within {
+      border: 1px solid var(--border--focused) !important;
+    }
+
+    &.--error {
+      border-color: var(--fill--danger--solid) !important;
+    }
+
+    &.--disabled {
+      pointer-events: none;
+      background: var(--fill--disabled) !important;
+      border-color: var(--border--neutral--solid);
+      input::placeholder {
+        color: var(--text--placeholder) !important;
+      }
+    }
+  }
+
+  &__option {
+    font-size: 14px !important;
+    &.--selected {
+      background-color: var(--fill--primary--selected) !important;
+
+      &:hover {
+        background-color: var(--fill--primary--selected--hover) !important;
+      }
+    }
+  }
+
+  &__optionIcon {
+    height: 24px;
+    width: 24px;
+    align-items: center;
+    svg {
+      path:last-of-type {
+        fill: var(--icon--primary) !important;
+      }
+    }
+  }
+
+  &__chip {
+    border-radius: 4px !important;
+    padding: 0px 4px 0px 8px !important;
+    background: var(--fill--chip) !important;
+    margin-top: 8px !important;
+    margin-right: 8px !important;
+    color: var(--text--primary) !important;
+
+    &__icon {
+      color: var(--icon--primary) !important;
+    }
+    svg {
+      min-width: 24px;
+      path:last-of-type {
+        fill: var(--icon--primary) !important;
+      }
+    }
+  }
+
+  &__chip__public {
+    padding: 4px 4px !important;
+  }
+
+  &__inputContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: -8px !important; // This is to negate the margin-top on tags, tags need margin-top when they wrap
+    min-width: 250px;
+  }
+
+  &__input {
+    font-size: 14px;
+    flex-grow: 2;
+    min-width: 100px;
+    height: 24px;
+    background-color: inherit;
+    border: none;
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__menuList {
+    max-height: 300px;
+  }
+
+  &__iconContainer {
+    display: flex;
+    align-items: center;
+    svg {
+      path:last-of-type {
+        fill: var(--icon--primary) !important;
+      }
+    }
+  }
+
+  &__clearIcon {
+    display: flex;
+    cursor: pointer;
+    padding-right: 4px;
+  }
+
+  &__cbox label {
+    display: flex;
+  }
+
+  &__label {
+    &__container {
+      overflow: hidden;
+    }
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

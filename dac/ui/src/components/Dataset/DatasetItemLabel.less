@@ -1,0 +1,178 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  .datasetItemLabel-item {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &:hover {
+      border-radius: 4px;
+
+      .datasetItemLabel-item__add {
+        opacity: 1;
+      }
+      .datasetItemLabel-item__starIcon {
+        opacity: 1;
+      }
+    }
+
+    &__iconBlock {
+      display: flex;
+      align-items: center;
+      margin-right: 5px;
+      gap: 4px;
+    }
+
+    &__add {
+      height: 24px;
+      width: 24px;
+      opacity: 0;
+      transition: 300ms ease all;
+      padding: 0;
+      color: var(--icon--primary) !important;
+
+      &:hover {
+        color: var(--icon--hover) !important;
+      }
+
+      &:disabled {
+        color: var(--icon--disabled) !important;
+      }
+    }
+
+    &__starIcon {
+      height: 24px;
+      width: 24px;
+      margin-right: 5px;
+      transition: 300ms ease all;
+      opacity: 0;
+      padding: 0;
+      color: var(--icon--primary) !important;
+
+      &:hover {
+        color: var(--icon--hover) !important;
+      }
+    }
+
+    &--starred {
+      opacity: 1 !important;
+    }
+
+    &--limitReached {
+      filter: invert(95%) sepia(11%) saturate(88%) hue-rotate(170deg)
+        brightness(120%) contrast(89%);
+    }
+
+    &--unstarred {
+      filter: invert(33%) sepia(24%) saturate(269%) hue-rotate(173deg)
+        brightness(91%) contrast(85%);
+
+      &:hover {
+        .gray-icon-hover();
+      }
+    }
+
+    &__content {
+      flex: 1;
+
+      .expand-icon {
+        height: 24px;
+        min-width: 24px;
+        padding: 0;
+        color: var(--icon--primary);
+      }
+
+      .font-icon {
+        min-width: 24px;
+        justify-content: center;
+      }
+      .searchHeading {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--text--primary);
+      }
+      .searchSubHeading {
+        font-size: 12px;
+        color: var(--text--faded);
+      }
+    }
+    .search-wrapper {
+      margin-left: 10px !important;
+    }
+  }
+
+  .resourceTree .datasetItemLabel-item__content.--isNotExpandable {
+    margin-left: 24px;
+  }
+
+  .dependantItem {
+    .datasetItemLabel-item {
+      &:hover {
+        background: none;
+        border-radius: none;
+
+        .datasetItemLabel-item__add {
+          opacity: 1;
+        }
+      }
+
+      &__content > div {
+        margin-bottom: 0px !important;
+        margin-top: 2px;
+      }
+
+      & * {
+        font-size: 12px;
+      }
+    }
+  }
+
+  //
+  .dataset-label-overlay {
+    .dremio-spinner {
+      --dremio--spinner--size: 24px;
+    }
+
+    .EllipsedText {
+      margin-left: 5px;
+    }
+  }
+
+  .draggable-row {
+    // .ColumnMenuItem__content
+    margin-left: 21px;
+    margin-right: 0;
+    padding: 0 4px;
+    width: 100%;
+  }
+
+  .info-draggable-row.draggable-row {
+    // .ColumnMenuItem__content
+    width: calc(100% - 29px);
+  }
+
+  .search_draggable-row {
+    // .ColumnMenuItem__content
+    .draggable-row {
+      width: calc(100% - 21px - 5px);
+    }
+  }
+}

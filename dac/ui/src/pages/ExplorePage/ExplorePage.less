@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/mixins.less"; // replacement of typography.less with mixins.less changes the output significantly
+//but the change is in better direction. Duplicated styles from typography are not loaded
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+
+  @gray: #aaa;
+  #grid-page {
+    height: 100vh;
+    overflow: hidden;
+    .fixed-data-table .public_fixedDataTable_header,
+    .fixed-data-table .public_fixedDataTable_hasBottomBorder {
+      border-color: var(--border--neutral);
+    }
+
+    .fixedDataTableCellLayout_columnResizerContainer {
+      border-color: var(--border--neutral);
+    }
+
+    .move-right {
+      width: 100%;
+    }
+
+    .tab-active {
+      width: 100%;
+      margin-right: 0;
+    }
+
+    .hide-tab {
+      height: 30px;
+    }
+
+    .settings-block {
+      width: 253px;
+      background-color: lightgray;
+      z-index: 99;
+    }
+
+    .wrap {
+      display: flex;
+    }
+
+    .closed {
+      transform: translateX(300px);
+      transition: all 0.15s ease-out;
+      width: 0;
+    }
+
+    .opened {
+      transform: translateX(0);
+      transition: all 0.15s ease-out;
+      display: block;
+    }
+
+    .dropdown-for-actions {
+      z-index: 99;
+    }
+
+    .table-control-wrap .selected-text {
+      background: #f2f2f2;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 99;
+      line-height: 22px;
+      text-align: center;
+      padding: 0 20px 0 1px;
+      box-sizing: content-box;
+      .fixedWidthSmall();
+      .fa {
+        padding-top: 3px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 18px;
+        font-size: 15px;
+        line-height: 15px;
+        color: @gray;
+      }
+    }
+  }
+}

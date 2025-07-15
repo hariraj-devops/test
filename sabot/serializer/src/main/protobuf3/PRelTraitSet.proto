@@ -1,0 +1,110 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax="proto3";
+package plan;
+
+option java_package = "com.dremio.plan.serialization";
+option optimize_for = SPEED;
+option java_multiple_files = true;
+option java_outer_classname = "PRelTraitSetTypes";
+
+message PRelTraitSet {
+  enum PConvention {
+    UNKNOWN_CONVENTION = 0;
+    NONE_CONVENTION = 1;
+    LOGICAL = 2;
+    PHYSICAL = 3;
+  }
+
+  PConvention legacy_convention = 1;
+  repeated PRelFieldCollation legacy_collation = 2;
+  repeated PRelTrait traits = 3;
+}
+
+message PRelTrait {
+  oneof implementation {
+    PRelCollation collation = 1;
+    PConvention convention = 2;
+    PDistributionTrait distribution_trait = 3;
+    PRelCompositeTrait composite_trait = 4;
+  }
+}
+
+enum PRelTraitDef {
+  COLLATION = 0;
+}
+
+message PRelCompositeTrait {
+  repeated PRelTrait traits = 1;
+}
+
+enum PConvention {
+  PHYSICAL = 0;
+  LOGICAL = 1;
+}
+
+message PRelCollation {
+  oneof implementation {
+    PRelCollationImpl impl = 1;
+  }
+}
+
+message PRelCollationImpl {
+  repeated PRelFieldCollation field_collations = 1;
+}
+
+message PRelFieldCollation {
+  enum PDirection {
+    UNKNOWN_DIRECTION = 0;
+    ASCENDING = 1;
+    STRICTLY_ASCENDING = 2;
+    DESCENDING = 3;
+    STRICTLY_DESCENDING = 4;
+    CLUSTERED = 5;
+    UNSPECIFIED = 6;
+  }
+
+  enum PNullDirection {
+    UNKNOWN_NULL_DIRECTION = 0;
+    UNSPECIFIED_NULL_DIRECTION = 1;
+    FIRST = 2;
+    LAST = 3;
+  }
+
+  int32 fieldIndex = 1;
+  PDirection direction = 2;
+  PNullDirection null_direction = 3;
+}
+
+message PDistributionTrait {
+  PDistributionType type = 1;
+  repeated PDistributionField fields = 2;
+}
+
+message PDistributionField {
+  int32  field_id = 1;
+  bool not_null = 2;
+}
+
+enum PDistributionType {
+  SINGLETON = 0;
+  HASH_DISTRIBUTED = 1;
+  ADAPTIVE_HASH_DISTRIBUTED = 2;
+  RANGE_DISTRIBUTED = 3;
+  ROUND_ROBIN_DISTRIBUTED = 4;
+  BROADCAST_DISTRIBUTED = 5;
+  ANY_ = 6; //There is a collision with ANY and the proto will not compile
+};

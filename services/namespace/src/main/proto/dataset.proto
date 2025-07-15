@@ -1,0 +1,150 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax="proto2";
+package com.dremio.service.namespace.dataset.proto;
+
+option java_package = "com.dremio.service.namespace.dataset.proto";
+option optimize_for = SPEED;
+
+option java_outer_classname = "DatasetProtobuf";
+
+import "dataset-common.proto";
+import "namespace-common.proto";
+import "namespace-file.proto";
+
+// root of the persisted Dataset information
+message DatasetConfig {
+  // Dataset id
+  optional com.dremio.service.namespace.proto.EntityId id = 1;
+  // the name of the dataset
+  optional string name = 2;
+  optional string owner = 3;
+  optional com.dremio.service.namespace.dataset.proto.DatasetType type = 4;
+  // creation timestamp of this version
+  optional int64 createdAt = 5;
+  repeated string fullPath = 6;
+  // version actually saved of a dataset
+  optional int64 version = 7 [deprecated = true];
+  // Acceleration id
+  optional string accelerationId = 8 [deprecated = true];
+  optional VirtualDataset virtualDataset = 9;
+  optional PhysicalDataset physicalDataset = 10;
+  repeated DatasetField dataset_fields = 11;
+
+  // cached metadata for this dataset.
+  optional ReadDefinition read_definition = 12;
+  optional int32 schema_version = 13 [default = 0];
+  optional bytes record_schema = 14; // batch schema
+  optional int64 lastModified = 15;
+  optional string tag = 16;
+  optional int32 total_num_splits = 17; // recomputed every time metadata is fetched from connector
+
+  // job queue for this dataset
+  optional string queue_id = 18;
+  optional string engine_name = 19;
+}
+
+message VirtualDataset {
+  // dataset version
+  optional string version = 1 [value_type=com.dremio.service.namespace.dataset.DatasetVersion];
+  // current sql generated from the state
+  optional string sql = 2;
+  // The fields of the dataset from a View perspective. This is generated from the view's batch schema
+  repeated ViewFieldType sql_fields = 3;
+  // list of datasets that this dataset refers to (first level only)
+  repeated ParentDataset parents = 4;
+  // context
+  repeated string context = 5;
+  repeated FieldOrigin fieldOrigins = 6 [deprecated = true];
+  // list of all parents of parents.
+  repeated ParentDataset grandParents = 7 [deprecated = true];
+  // list of field names that are NOT nullable (NOT NULL)
+  repeated string required_fields = 8 [deprecated = true];
+  // The fields of the dataset from a View perspective. This is generated from the view's rowType
+  repeated ViewFieldType calcite_fields = 9 [deprecated = true];
+  optional bool default_reflection_enabled = 10;
+  optional IcebergViewAttributes iceberg_view_attributes = 11;
+  // One of the ancestor views changed source and/or fields, this view needs update
+  optional bool schema_outdated = 12;
+  // The immediate (first level) origin(s) for each field in the dataset
+  repeated FieldOrigin field_upstreams = 13;
+}
+
+enum SortOrder {
+  ASC = 1;
+  DESC = 2;
+}
+
+message PhysicalDataset {
+  optional com.dremio.service.namespace.file.proto.FileConfig formatSettings = 1;
+  optional bytes deprecated_dataset_schema = 2; // FlatBuffer encoded schema
+  optional bool isAppendOnly = 3 [default = false];
+  optional AccelerationSettings accelerationSettings = 4;
+  optional bool allow_approx_stats = 5 [default = false];
+  optional bool icebergMetadataEnabled = 6; // For this selection, iceberg metadata is present. False by default.
+  optional com.dremio.service.namespace.dataset.proto.IcebergMetadata iceberg_metadata = 7;
+  optional com.dremio.service.namespace.dataset.proto.UserDefinedSchemaSettings internal_schema_settings = 8;
+  optional PrimaryKey primary_key = 9;
+}
+
+message PrimaryKey {
+  repeated string column = 1;
+}
+
+message DatasetField {
+  optional string field_name = 1;
+  optional bytes field_schema = 2; // FlatBuffer encoded schema
+}
+
+message IcebergViewAttributes {
+ optional string view_spec_version = 1;
+ optional string view_dialect = 2;
+ optional string metadata_location = 3;
+}
+
+message AccelerationSettings {
+  // acceleration ttl
+  optional TimePeriod accelerationTTL = 1 [deprecated = true];
+  // refresh method whether to fully or incrementally update the cache
+  optional RefreshMethod method = 2 [default = FULL];
+  // if incremental which field should we use to incrementally update(for non-filesystem tables only)
+  optional string refreshField = 3;
+  // materialization refresh period
+  optional int64 refreshPeriod = 4;
+  // materialization grace period
+  optional int64 gracePeriod = 5;
+  optional int64 version = 6 [deprecated = true];
+  optional bool neverExpire = 7 [default = false];
+  optional bool neverRefresh = 8 [default = false];
+  optional string tag = 9;
+  // if the incremental refresh is snapshot based
+  optional bool snapshotBased = 10 [default = false];
+  // active refresh policy type
+  optional RefreshPolicyType refreshPolicyType = 11 [default = PERIOD];
+  optional string refreshSchedule = 12;
+  // Represents accelerationRefreshOnDataChanges option comes from source config.
+  // For Iceberg table, when inheriting source settings, refreshPolicyType will
+  // be set to REFRESH_ON_DATA_CHANGES if sourceRefreshOnDataChanges is true.
+  optional bool sourceRefreshOnDataChanges = 13 [default = false];
+}
+
+enum RefreshMethod {
+  FULL = 1;
+  INCREMENTAL = 2;
+  // For GET "acceleration/settings" REST API, this value represents the refresh method is managed by Dremio automatically.
+  AUTO = 3;
+}
+

@@ -1,0 +1,322 @@
+#
+# Copyright (C) 2017-2019 Dremio Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+openapi: 3.1.0
+info:
+  title: Example API
+  version: v4
+  description: |-
+    Example spec.
+  x-dremio:
+    # Proto package is the package for generated protobuf files.
+    protoPackage: com.dremio.example.api
+    # Package for the Java classes generated from protos.
+    javaPackage: com.dremio.example.api
+    # Java class with all generated Java protos.
+    javaOuterClass: ExampleApiProto
+    # Package for the Java class with REST methods.
+    javaResourcePackage: com.dremio.dac.api
+    # Name of the interface for the REST resource, implementation
+    # class has 'Impl' suffix.
+    javaResourceClass: ExampleV4Resource
+    # Whether the resource class is to be secured by auth interceptor.
+    secured: true
+    # What roles have access to the REST methods.
+    rolesAllowed: { 'user', 'admin' }
+
+servers:
+  - url: "/api/v4test"
+
+# API paths.
+paths:
+  /examples:
+    # Lists objects.
+    get:
+      description: |
+        List objects.
+      parameters:
+        - $ref: '#/components/parameters/listFilter'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageObjects'
+        # Bad request.
+        '400':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authenticated.
+        '401':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authorized.
+        '403':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Internal server error.
+        '500':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+  /examples/{path}:
+    # Gets an object at the given path.
+    get:
+      description: |
+        Gets example object.
+      parameters:
+        - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageObject'
+        # Bad request.
+        '400':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authenticated.
+        '401':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authorized.
+        '403':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not found.
+        '404':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Internal server error.
+        '500':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+    # Posts an object.
+    post:
+      description: |
+        Creates an object at the path.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageObject'
+      parameters:
+        - $ref: '#/components/parameters/path'
+      responses:
+        # Created.
+        '201':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageObject'
+        # Bad request.
+        '400':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authenticated.
+        '401':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authorized.
+        '403':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not found.
+        '404':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Internal server error.
+        '500':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+    # Deletes an object.
+    delete:
+      description: |
+        Deletes an object.
+      parameters:
+        - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: Deleted successfully.
+        # Bad request.
+        '400':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authenticated.
+        '401':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not authorized.
+        '403':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Not found.
+        '404':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+        # Internal server error.
+        '500':
+          $ref: './shared_v4.yaml#/components/responses/ErrorResponse'
+
+components:
+  # Common parameters.
+  parameters:
+    path:
+      in: path
+      name: path
+      schema:
+        type: string
+      required: true
+      description: |
+        Example path of an object.
+    listFilter:
+      in: query
+      name: filter
+      schema:
+        type: string
+      description: |
+        CEL expression. See [Google CEL spec](https://github.com/google/cel-spec).
+
+  schemas:
+    OneOf:
+      description: |
+        Test oneof message with field expansion for references
+      oneOf:
+        - $ref: '#/components/schemas/StringChoice'
+        - $ref: '#/components/schemas/IntChoice'
+        - $ref: '#/components/schemas/IntChoiceWrapper'
+
+    StringChoice:
+      type: object
+      description: String choice
+      properties:
+        string_value:
+          type: string
+
+    IntChoice:
+      type: object
+      description: Int choice
+      properties:
+        int_value:
+          type: number
+          format: int32
+
+    IntChoiceWrapper:
+      type: object
+      description: Int choice wrapper, won't exist as a message
+      properties:
+        another_int_value:
+          type: number
+          format: int32
+
+    Enum:
+      type: string
+      enum: [ABC, CDE]
+      description: |
+        Multi-line enum description to test
+        comments for enums.
+      x-enum-descriptions:
+        - First enum value.
+        - Second enum value
+
+    EnumOneOf:
+      description: |
+        Enum can be defined with const fields io oneOf.
+      oneOf:
+        - const: ABC1
+          title: ABC1 description
+        - const: DEF1
+          title: DEF1 description
+
+    EnumArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Enum'
+
+    StorageObjects:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorageObject'
+
+    # Example object.
+    StorageObject:
+      type: object
+      description: |
+        Example object.
+      properties:
+        test:
+          type: string
+        path:
+          type: string
+          description: Path of the object.
+        enum_value:
+          $ref: '#/components/schemas/Enum'
+        intValue1:
+          type: number
+          format: int32
+          minimum: 10
+          maximum: 20
+          description: |
+            Int value.
+        longValue:
+          type: number
+          description: |
+            Long value.
+        stringValue1:
+          type: string
+          description: |
+            String value.
+        patternString:
+          type: string
+          pattern: "[0-9]+"
+          description: |
+            Pattern value.
+        email:
+          type: string
+          format: email
+          description: |
+            Email value.
+        floatValue:
+          type: number
+          format: float
+          description: |
+            Float value.
+        doubleValue:
+          type: number
+          format: double
+          description: |
+            Double value.
+        timestampValue:
+          type: string
+          format: date-time
+          description: |
+            Timestamp value.
+        durationValue:
+          type: string
+          format: duration
+          description: |
+            Duration value.
+        stringList:
+          type: array
+          description: |
+            String list.
+          items:
+            type: string
+        inlineOneof:
+          description: Inline oneof.
+          oneOf:
+            - $ref: '#/components/schemas/StringChoice'
+            - $ref: '#/components/schemas/IntChoice'
+        enumOneof:
+          description: Oneof of consts works as a enum.
+          oneOf:
+            - const: VALUE1
+              title: Value1 description.
+            - const: VALUE2
+              title: Value2 description.
+      required:
+        - stringValue1
+        - intValue1
+        - email
+        - patternString

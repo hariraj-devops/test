@@ -1,0 +1,542 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.dremio.dac.api;
+
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CONFLICT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.dremio.common.util.TestTools;
+import com.dremio.dac.server.BaseTestServer;
+import com.dremio.dac.service.collaboration.CollaborationHelper;
+import com.dremio.dac.service.collaboration.Tags;
+import com.dremio.dac.service.collaboration.Wiki;
+import com.dremio.datastore.api.KVStoreProvider;
+import com.dremio.datastore.api.LegacyKVStoreProvider;
+import com.dremio.exec.catalog.ViewCreatorFactory;
+import com.dremio.exec.store.dfs.NASConf;
+import com.dremio.service.namespace.NamespaceException;
+import com.dremio.service.namespace.NamespaceKey;
+import com.dremio.service.namespace.NamespaceUtils;
+import com.dremio.service.namespace.dataset.proto.DatasetConfig;
+import com.dremio.service.namespace.dataset.proto.DatasetType;
+import com.dremio.service.namespace.dataset.proto.VirtualDataset;
+import com.dremio.service.namespace.proto.NameSpaceContainer;
+import com.dremio.service.namespace.source.proto.SourceConfig;
+import com.dremio.service.namespace.space.proto.FolderConfig;
+import com.dremio.service.namespace.space.proto.SpaceConfig;
+import com.dremio.service.users.SystemUser;
+import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import javax.ws.rs.client.Entity;
+import org.junit.Test;
+
+/** Tests the {@link CollaborationResource} API */
+public class TestCollaborationResource extends BaseTestServer {
+  @Test
+  public void testGetTags() throws Exception {
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    // Test no tags
+    Tags noTags =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("tag"))
+                .buildGet(),
+            Tags.class);
+    assertEquals(noTags.getTags().size(), 0);
+
+    CollaborationHelper collaborationHelper = getCollaborationHelper();
+
+    List<String> tagList = Arrays.asList("tag1", "tag2");
+
+    Tags newTags = new Tags(tagList, null);
+    collaborationHelper.setTags(dataset.getId().getId(), newTags);
+
+    Tags tags =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("tag"))
+                .buildGet(),
+            Tags.class);
+    assertEquals(tags.getTags().size(), 2);
+    assertTrue(tags.getTags().containsAll(tagList));
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testSetTags() throws Exception {
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    List<String> tagList = Arrays.asList("tag1", "tag2");
+    Tags newTags = new Tags(tagList, null);
+
+    Tags tags =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("tag"))
+                .buildPost(Entity.json(newTags)),
+            Tags.class);
+    assertEquals(2, tags.getTags().size());
+    assertTrue(tags.getTags().containsAll(tagList));
+    assertNotNull(tags.getVersion());
+
+    // test update of existing tags
+    tagList = Arrays.asList("tag1", "tag3");
+    newTags = new Tags(tagList, tags.getVersion());
+    tags =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("tag"))
+                .buildPost(Entity.json(newTags)),
+            Tags.class);
+
+    // verify the new tags
+    assertEquals(2, tags.getTags().size());
+    assertTrue(tags.getTags().containsAll(tagList));
+    assertNotNull(tags.getVersion());
+
+    // clear out tags
+    tagList = Collections.emptyList();
+    newTags = new Tags(tagList, tags.getVersion());
+    tags =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("tag"))
+                .buildPost(Entity.json(newTags)),
+            Tags.class);
+
+    // verify the new tags are empty
+    assertEquals(tags.getTags().size(), 0);
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testGetTagsErrors() {
+    // invalid id
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(getHttpClient().getCatalogApi().path("bad-id").path("collaboration").path("tag"))
+            .buildGet());
+  }
+
+  @Test
+  public void testSetTagsErrors() throws Exception {
+    List<String> tagList = Arrays.asList("tag1", "tag2");
+    Tags newTags = new Tags(tagList, null);
+
+    // set tags for an invalid id
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(getHttpClient().getCatalogApi().path("bad-id").path("collaboration").path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    // set tag to invalid entity type
+    tagList = Arrays.asList("tag1", "tag2");
+    newTags = new Tags(tagList, null);
+
+    String folderName = "someFolder";
+    createFolder(Collections.singletonList(spacePath.getRoot()), folderName);
+    FolderConfig folderConfig =
+        getNamespaceService()
+            .getFolder(new NamespaceKey(Arrays.asList(spacePath.getRoot(), folderName)));
+
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(folderConfig.getId().getId())
+                    .path("collaboration")
+                    .path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    // set invalid tags (duplicate)
+    tagList = Arrays.asList("tag1", "tag2", "tag1");
+    newTags = new Tags(tagList, null);
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    // update tags with invalid version
+    tagList = Arrays.asList("tag1", "tag2");
+    newTags = new Tags(tagList, null);
+    expectSuccess(
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    newTags = new Tags(tagList, "5");
+    expectStatus(
+        CONFLICT,
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    // test tag size limit - 128 max
+    tagList = Arrays.asList("tag1", Strings.repeat("tag", 43));
+    newTags = new Tags(tagList, null);
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("tag"))
+            .buildPost(Entity.json(newTags)));
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testGetWiki() throws Exception {
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    Wiki emptyWiki =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("wiki"))
+                .buildGet(),
+            Wiki.class);
+    assertEquals(emptyWiki.getText(), "");
+
+    CollaborationHelper collaborationHelper = getCollaborationHelper();
+
+    Wiki newWiki = new Wiki("sample wiki text", null);
+    collaborationHelper.setWiki(dataset.getId().getId(), newWiki);
+
+    Wiki wiki =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("wiki"))
+                .buildGet(),
+            Wiki.class);
+    assertEquals(wiki.getText(), newWiki.getText());
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testSetWiki() throws Exception {
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    // create wiki
+    Wiki newWiki = new Wiki("sample wiki text", null);
+    Wiki wiki =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("wiki"))
+                .buildPost(Entity.json(newWiki)),
+            Wiki.class);
+    assertEquals(wiki.getText(), newWiki.getText());
+    assertEquals(wiki.getVersion().longValue(), 0L);
+
+    // update wiki
+    newWiki = new Wiki("some text", wiki.getVersion());
+    expectSuccess(
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("wiki"))
+            .buildPost(Entity.json(newWiki)));
+
+    wiki =
+        expectSuccess(
+            getBuilder(
+                    getHttpClient()
+                        .getAPIv3()
+                        .path("catalog")
+                        .path(dataset.getId().getId())
+                        .path("collaboration")
+                        .path("wiki"))
+                .buildGet(),
+            Wiki.class);
+    assertEquals(wiki.getText(), newWiki.getText());
+    assertEquals(wiki.getVersion().longValue(), 1L);
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testGetWikiErrors() {
+    // invalid id
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(
+                getHttpClient().getCatalogApi().path("bad-id").path("collaboration").path("wiki"))
+            .buildGet());
+  }
+
+  @Test
+  public void testSetWikiErrors() throws Exception {
+    Wiki newWiki = new Wiki("sample wiki text", null);
+
+    // set tags for an invalid id
+    expectStatus(
+        BAD_REQUEST,
+        getBuilder(
+                getHttpClient().getCatalogApi().path("bad-id").path("collaboration").path("wiki"))
+            .buildPost(Entity.json(newWiki)));
+
+    // create space
+    NamespaceKey spacePath = new NamespaceKey("testspace");
+    List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    createSpaceAndVDS(spacePath, vdsPath);
+    DatasetConfig dataset = getNamespaceService().getDataset(new NamespaceKey(vdsPath));
+
+    // update tags with invalid version
+    newWiki = new Wiki("sample wiki text", null);
+    expectSuccess(
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("wiki"))
+            .buildPost(Entity.json(newWiki)));
+
+    newWiki = new Wiki("sample wiki text", 5L);
+    expectStatus(
+        CONFLICT,
+        getBuilder(
+                getHttpClient()
+                    .getAPIv3()
+                    .path("catalog")
+                    .path(dataset.getId().getId())
+                    .path("collaboration")
+                    .path("wiki"))
+            .buildPost(Entity.json(newWiki)));
+
+    // test wiki test size limit - 100k max
+    // newWiki = new Wiki(Strings.repeat("f", 100_001), "0");
+    // expectStatus(BAD_REQUEST,
+    // getBuilder(getHttpClient().getCatalogApi().path(dataset.getId().getId()).path("collaboration").path("wiki")).buildPost(Entity.json(newWiki)));
+
+    // cleanup space
+    getNamespaceService()
+        .deleteSpace(spacePath, NamespaceUtils.getVersion(spacePath, getNamespaceService()));
+  }
+
+  @Test
+  public void testOrphanPruning() throws Exception {
+    // do a quick prune to clear the wiki/tags store
+    LegacyKVStoreProvider legacyKVStoreProvider = lMaster(LegacyKVStoreProvider.class);
+    KVStoreProvider kvStoreProvider = lMaster(KVStoreProvider.class);
+    CollaborationHelper.pruneOrphans(legacyKVStoreProvider, kvStoreProvider);
+
+    // create a source
+    final NASConf nasConf = new NASConf();
+    nasConf.path = TestTools.getWorkingPath() + "/src/test/resources";
+
+    final NamespaceKey sourceKey = new NamespaceKey("mysource");
+    final SourceConfig sourceConfig = new SourceConfig();
+    sourceConfig.setName(sourceKey.getRoot());
+    sourceConfig.setConfig(nasConf.toBytesString());
+    sourceConfig.setType("NAS");
+    getNamespaceService().addOrUpdateSource(sourceKey, sourceConfig);
+
+    // create space
+    final NamespaceKey spacePath = new NamespaceKey("testspace");
+    final List<String> vdsPath = Arrays.asList(spacePath.getRoot(), "testVDS");
+    final String spaceVersion = createSpaceAndVDS(spacePath, vdsPath);
+
+    // create folder in space
+    createFolder(spacePath.getPathComponents(), "folder1");
+
+    final List<String> vdsPath2 = Arrays.asList(spacePath.getRoot(), "testVDS2");
+    createVDS(vdsPath2);
+
+    addWiki(spacePath.getPathComponents(), "text");
+    addWiki(vdsPath, "text");
+    addWiki(vdsPath2, "text");
+    addTags(vdsPath, Collections.singletonList("tag"));
+    addWiki(Arrays.asList(spacePath.getRoot(), "folder1"), "text");
+
+    // add wiki to the source
+    addWiki(sourceKey.getPathComponents(), "text");
+
+    // nothing deleted so no pruned items
+    int pruneCount = CollaborationHelper.pruneOrphans(legacyKVStoreProvider, kvStoreProvider);
+    assertEquals(0, pruneCount);
+
+    // delete the space and children
+    getNamespaceService().deleteSpace(spacePath, spaceVersion);
+    pruneCount = CollaborationHelper.pruneOrphans(legacyKVStoreProvider, kvStoreProvider);
+    assertEquals(5, pruneCount);
+
+    // delete the source
+    getNamespaceService().deleteSource(sourceKey, sourceConfig.getTag());
+    pruneCount = CollaborationHelper.pruneOrphans(legacyKVStoreProvider, kvStoreProvider);
+    assertEquals(1, pruneCount);
+  }
+
+  private void createFolder(List<String> path, String folderName) throws NamespaceException {
+    final List<String> folderPath = new ArrayList<>(path);
+    folderPath.add(folderName);
+
+    final FolderConfig config = new FolderConfig();
+    config.setName(folderName);
+    config.setFullPathList(folderPath);
+
+    getNamespaceService().addOrUpdateFolder(new NamespaceKey(folderPath), config);
+  }
+
+  private void addWiki(List<String> path, String text) throws Exception {
+    final NameSpaceContainer container =
+        getNamespaceService().getEntities(Collections.singletonList(new NamespaceKey(path))).get(0);
+    final CollaborationHelper collaborationHelper = getCollaborationHelper();
+
+    collaborationHelper.setWiki(NamespaceUtils.getIdOrNull(container), new Wiki(text, null));
+  }
+
+  private void addTags(List<String> path, List<String> tags) throws Exception {
+    final NameSpaceContainer container =
+        getNamespaceService().getEntities(Collections.singletonList(new NamespaceKey(path))).get(0);
+    final CollaborationHelper collaborationHelper = getCollaborationHelper();
+
+    collaborationHelper.setTags(NamespaceUtils.getIdOrNull(container), new Tags(tags, null));
+  }
+
+  private String createSpaceAndVDS(NamespaceKey spacePath, List<String> vdsPath)
+      throws NamespaceException {
+    // create space
+    final SpaceConfig spaceConfig = new SpaceConfig();
+    spaceConfig.setName(spacePath.getRoot());
+    getNamespaceService().addOrUpdateSpace(spacePath, spaceConfig);
+
+    createVDS(vdsPath);
+    return spaceConfig.getTag();
+  }
+
+  private void createVDS(List<String> vdsPath) {
+    // create vds
+    final VirtualDataset virtualDataset = new VirtualDataset();
+    virtualDataset.setSql("select * from sys.version");
+
+    final DatasetConfig datasetConfig = new DatasetConfig();
+    datasetConfig.setName(vdsPath.get(vdsPath.size() - 1));
+    datasetConfig.setFullPathList(vdsPath);
+    datasetConfig.setType(DatasetType.VIRTUAL_DATASET);
+    datasetConfig.setVirtualDataset(virtualDataset);
+
+    l(ViewCreatorFactory.class)
+        .get(SystemUser.SYSTEM_USERNAME)
+        .createView(vdsPath, "select * from sys.version", null, false);
+  }
+}

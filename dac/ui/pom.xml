@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017-2019 Dremio Corporation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.dremio</groupId>
+    <artifactId>dremio-dac-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>dremio-dac-ui</artifactId>
+  <packaging>jar</packaging>
+  <name>Analyst Center - UI</name>
+  <properties>
+    <npm.buildscript>build</npm.buildscript>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-lib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-design-system</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-icons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-js</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-browserslist-config</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dremio</groupId>
+      <artifactId>dremio-ui-oss-license-checker</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <skip>${skip.uiclean}</skip>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/node_modules</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseSets>
+            <licenseSet>
+              <includes combine.children="append">
+                <include>**</include>
+              </includes>
+              <excludes combine.children="append">
+                <!-- todo: ${project.build.directory} not working, unsure why -->
+                <exclude>target/**</exclude>
+                <exclude>build/**</exclude>
+                <exclude>public/**</exclude>
+                <exclude>coverage/**</exclude>
+                <exclude>.nyc_output/**</exclude>
+                <exclude>**/*.pattern</exclude>
+                <exclude>*.code-workspace</exclude>
+                <exclude>src/services/nessie/client/**</exclude>
+                <exclude>src/mockServiceWorker.js</exclude>
+                <exclude>**/*.json</exclude>
+                <exclude>**/*.md</exclude>
+                <exclude>.npmrc</exclude>
+                <exclude>.pnpmfile.cjs</exclude>
+                <exclude>**/*.gitkeep</exclude>
+                <exclude>**/*.lottie</exclude>
+                <exclude>.prettierignore</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+          <mapping>
+            <browserslistrc>SCRIPT_STYLE</browserslistrc>
+            <js>DOUBLESLASH_STYLE</js>
+            <jsx>DOUBLESLASH_STYLE</jsx>
+            <ts>DOUBLESLASH_STYLE</ts>
+            <tsx>DOUBLESLASH_STYLE</tsx>
+            <css>SLASHSTAR_STYLE</css>
+            <scss>SLASHSTAR_STYLE</scss>
+            <html>XML_STYLE</html>
+            <xml>XML_STYLE</xml>
+            <yml>SHARP_STYLE</yml>
+            <yaml>SHARP_STYLE</yaml>
+          </mapping>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <configuration>
+          <environmentVariables>
+            <EDITION_TYPE>ce</EDITION_TYPE>
+          </environmentVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>install-node-and-pnpm</goal>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>initialize</phase>
+            <!-- Optional configuration which provides for running any npm
+              command -->
+            <configuration>
+              <arguments>${pnpm.installscript}</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run js linter and unit tests</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run test:only --reporter mocha-multi-reporters --reporter-options configFile=${project.basedir}/mochaReporters.json,cmrOutput=mocha-junit-reporter+mochaFile+${project.build.directory}:mocha-junit-reporter+testsuitesTitle+dac-ui</arguments>
+              <skip>${skipTests}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make sure there is no outdated/GPL OSS</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run report:oss --no-write</arguments>
+              <!-- <skip>${skipTests}</skip> -->
+              <skip>true</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build minimized webpack bundle</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run ${npm.buildscript} --output-path=${project.build.outputDirectory}/rest/dremio_static</arguments>
+              <skip>${skip.uibundle}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>overwrite sourcemaps</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run overwrite-sourcemaps --output-path=${project.build.outputDirectory}/rest/dremio_static</arguments>
+              <skip>${skip.uibundle}</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>precommit</id>
+      <properties>
+        <npm.buildscript>build</npm.buildscript>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>**/sourcemaps/**</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

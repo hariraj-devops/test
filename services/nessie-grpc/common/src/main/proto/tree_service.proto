@@ -1,0 +1,297 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+package com.dremio.services.nessie.grpc.proto;
+
+import "util.proto";
+import "content_service.proto";
+
+option java_multiple_files = true;
+option java_package = "com.dremio.services.nessie.grpc.api";
+option java_outer_classname = "TreeServiceProto";
+
+service TreeService {
+  rpc getAllReferences (GetAllReferencesRequest) returns (GetAllReferencesResponse) {}
+  rpc getReferenceByName (GetReferenceByNameRequest) returns (Reference) {}
+  rpc createReference (CreateReferenceRequest) returns (Reference) {}
+  rpc getDefaultBranch (Empty) returns (Reference) {}
+  rpc assignReference (AssignReferenceRequest) returns (ReferenceResponse) {}
+  rpc deleteReference (DeleteReferenceRequest) returns (ReferenceResponse) {}
+  rpc getCommitLog (CommitLogRequest) returns (CommitLogResponse) {}
+  rpc getEntries (EntriesRequest) returns (EntriesResponse) {}
+  rpc transplantCommitsIntoBranch (TransplantRequest) returns (MergeResponse) {}
+  rpc mergeRefIntoBranch (MergeRequest) returns (MergeResponse) {}
+  rpc commitMultipleOperations (CommitRequest) returns (CommitResponse) {}
+  rpc referenceHistory (ReferenceHistoryRequest) returns (ReferenceHistoryResponse) {}
+}
+
+enum ReferenceType {
+  BRANCH = 0;
+  TAG = 1;
+}
+
+message CreateReferenceRequest {
+  string sourceRefName = 1;
+  Reference reference = 2;
+}
+
+message GetAllReferencesRequest {
+  optional int32 maxRecords = 1;
+  optional string pageToken = 2;
+  optional FetchOption fetchOption = 3;
+  optional string filter = 4;
+}
+
+message GetAllReferencesResponse {
+  repeated Reference reference = 1;
+  bool hasMore = 2;
+  optional string pageToken = 3;
+}
+
+message GetReferenceByNameRequest {
+  string namedRef = 1;
+  optional FetchOption fetchOption = 3;
+}
+
+message AssignReferenceRequest {
+  string namedRef = 1;
+  string oldHash = 2;
+  oneof assignTo {
+    Branch branch = 3;
+    Tag tag = 4;
+    Detached detached = 5;
+  }
+  optional ReferenceType reference_type = 6;
+}
+
+message ReferenceResponse {
+  optional Reference reference = 1;
+}
+
+message DeleteReferenceRequest {
+  string namedRef = 1;
+  string hash = 2;
+  optional ReferenceType reference_type = 6;
+}
+
+message CommitLogRequest {
+  string namedRef = 1;
+  optional string startHash = 2;
+  optional string endHash = 3;
+  optional int32 maxRecords = 4;
+  optional string pageToken = 5;
+  optional string filter = 6;
+  optional FetchOption fetchOption = 7;
+}
+
+message CommitLogResponse {
+  repeated CommitLogEntry logEntries = 1;
+  bool hasMore = 2;
+  optional string token = 3;
+}
+
+message MergeResponse {
+  bool wasApplied = 1;
+  bool wasSuccessful = 2;
+  string targetBranchName = 3;
+  string effectiveTargetHash = 4;
+  optional string expectedHash = 5;
+  optional string resultantTargetHash = 6;
+  optional string commonAncestorHash = 7;
+  repeated CommitLogEntry sourceCommits = 8;
+  optional CommitLogEntries targetCommits = 9; // using sub-message to properly support null target commit lists
+  repeated ContentKeyDetails details = 10;
+}
+
+message CommitLogEntries {
+  repeated CommitLogEntry entries = 1;
+}
+
+message ContentKeyDetails {
+  ContentKey contentKey = 1;
+  MergeBehavior mergeBehavior = 2;
+  ContentKeyConflict conflictType = 3;
+  repeated string sourceCommitHashes = 4;
+  repeated string targetCommitHashes = 5;
+  optional ContentKeyConflictDetails conflict = 6;
+}
+
+message ContentKeyConflictDetails {
+  string conflictType = 1; // the canonical enum for this value is the OSS ConflictType java class
+  ContentKey key = 2;
+  string message = 3;
+}
+
+enum ContentKeyConflict {
+  NONE = 0;
+  UNRESOLVABLE = 1;
+}
+
+enum MergeBehavior {
+  NORMAL = 0;
+  FORCE = 1;
+  DROP = 2;
+}
+
+message CommitLogEntry {
+  CommitMeta commitMeta = 1;
+  optional string parentCommitHash = 2;
+  repeated CommitOperation operations = 3;
+}
+
+message EntriesRequest {
+  string namedRef = 1;
+  optional string hashOnRef = 2;
+  optional int32 maxRecords = 3;
+  optional string pageToken = 4;
+  optional string filter = 5;
+  optional int32 namespaceDepth = 6;
+  optional bool withContent = 7;
+  optional ContentKey minKey = 8;
+  optional ContentKey maxKey = 9;
+  optional ContentKey prefixKey = 10;
+  repeated ContentKey keys = 11;
+}
+
+message EntriesResponse {
+  repeated Entry entries = 1;
+  bool hasMore = 2;
+  optional string token = 3;
+  optional Reference effectiveReference = 4;
+}
+
+message ReferenceHistoryRequest {
+  string namedRef = 1;
+  optional int32 headCommitsToScan = 2;
+}
+
+message ReferenceHistoryResponse {
+  Reference reference = 1;
+  ReferenceHistoryState current = 2;
+  repeated ReferenceHistoryState previous = 3;
+  CommitConsistency commitLogConsistency = 4;
+}
+
+message ReferenceHistoryState {
+  string commitHash = 1;
+  CommitConsistency consistency = 2;
+  optional CommitMeta commitMeta = 3;
+}
+
+message CommitConsistency {
+  string value = 1; // Maps to Nessie OSS CommitConsistency enum names
+}
+
+enum ContentType {
+  UNKNOWN = 0;
+  ICEBERG_TABLE = 1;
+  DELTA_LAKE_TABLE = 2;
+  ICEBERG_VIEW = 3;
+  NAMESPACE = 4;
+  UDF = 5;
+}
+
+message Entry {
+  ContentType type = 1;
+  ContentKey contentKey = 2;
+  optional string contentId = 3;
+  optional Content content = 4;
+}
+
+message TransplantRequest {
+  string branchName = 1;
+  optional string hash = 2;
+  string message = 3;
+  string fromRefName = 4;
+  repeated string hashesToTransplant = 5;
+  optional bool keepIndividualCommits = 6;
+  optional bool dryRun = 7;
+  optional bool returnConflictAsResult = 8;
+  optional bool fetchAdditionalInfo = 9;
+  optional MergeBehavior defaultKeyMergeMode = 10;
+  repeated MergeKeyBehavior mergeModes = 11;
+}
+
+message MergeRequest {
+  string fromHash = 1;
+  string toBranch = 2;
+  optional string expectedHash = 3;
+  string fromRefName = 4;
+  optional bool keepIndividualCommits = 5;
+  optional bool dryRun = 7;
+  optional bool returnConflictAsResult = 8;
+  optional bool fetchAdditionalInfo = 9;
+  optional MergeBehavior defaultKeyMergeMode = 10;
+  repeated MergeKeyBehavior mergeModes = 11;
+  optional string message = 12;
+  optional CommitMeta commitMeta = 13;
+}
+
+message MergeKeyBehavior {
+  ContentKey key = 1;
+  MergeBehavior mergeBehavior = 2;
+}
+
+message CommitRequest {
+  string branch = 1;
+  string hash = 2;
+  CommitOps commitOperations = 3;
+}
+
+message CommitResponse {
+  reserved 1, 2, 3; // legacy fields: name, hash, metadata
+
+  Branch branch = 4;
+  repeated AddedContent addedContent = 5;
+}
+
+message AddedContent {
+  ContentKey key = 1;
+  string contentId = 2;
+}
+
+message CommitOps {
+  CommitMeta commitMeta = 1;
+  repeated CommitOperation operations = 2;
+}
+
+message CommitOperation {
+  oneof type {
+    Put put = 1;
+    Delete delete = 2;
+    Unchanged unchanged = 3;
+  }
+}
+
+message Put {
+  ContentKey key = 1;
+  Content content = 2;
+  optional Content expectedContent = 3;
+}
+
+message Delete {
+  ContentKey key = 1;
+}
+
+message Unchanged {
+  ContentKey key = 1;
+}
+
+enum FetchOption {
+  MINIMAL = 0;
+  ALL = 1;
+}

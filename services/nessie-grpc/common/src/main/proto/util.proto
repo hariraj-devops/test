@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dremio.services.nessie.grpc.api";
+option java_outer_classname = "Util";
+
+package com.dremio.services.nessie.grpc.proto;
+
+import "google/protobuf/timestamp.proto";
+
+message Empty {}
+
+message CommitMeta {
+  optional string hash = 1;
+  optional string committer = 2;
+  repeated string author = 3;
+  repeated string signedOffBy = 4;
+  string message = 5;
+  optional google.protobuf.Timestamp commitTime = 6;
+  optional google.protobuf.Timestamp authorTime = 7;
+  map<string, string> properties = 8 [deprecated = true]; // kept for backward compatibility
+  repeated string parentHashes = 9;
+  map<string, PropertyEntry> propertyEntries = 10;
+}
+
+message PropertyEntry {
+  repeated string value = 1;
+}
+
+message Reference {
+  oneof type {
+    Branch branch = 1;
+    Tag tag = 2;
+    Detached detached = 3;
+  }
+}
+
+message Branch {
+  string name = 1;
+  optional string hash = 2;
+  optional ReferenceMetadata metadata = 3;
+}
+
+message Tag {
+  string name = 1;
+  optional string hash = 2;
+  optional ReferenceMetadata metadata = 3;
+}
+
+message Detached {
+  optional string hash = 2;
+  optional ReferenceMetadata metadata = 3;
+}
+
+message ReferenceMetadata {
+  optional int32 numCommitsAhead = 1;
+  optional int32 numCommitsBehind = 2;
+  optional CommitMeta commitMetaOfHEAD = 3;
+  optional string commonAncestorHash = 4;
+  optional int64 numTotalCommits = 5;
+}

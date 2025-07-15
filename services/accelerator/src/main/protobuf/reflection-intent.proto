@@ -1,0 +1,106 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.dremio.service.reflection.proto;
+
+import "reflection-common.proto";
+import "job.proto";
+import "dataset.proto";
+
+
+option java_package = "com.dremio.service.reflection.proto";
+option optimize_for = SPEED;
+
+option java_outer_classname = "ReflectionDacProtobuf";
+
+// defines messages that represent a user intent
+
+enum ReflectionGoalState {
+  ENABLED = 0;
+  DISABLED = 1;
+  DELETED = 2;
+}
+
+message ReflectionGoal {
+  optional ReflectionId id = 1; // const
+  // This field is for providing access to the tag field, which is normally overwritten by the
+  // LegacyKVStoreAdapter with the tag from a sidecar. The tag may have a valid value if Dremio
+  // was upgraded from a pre-4.2.0 build to 4.2.0 which introduced the tag sidecar and revised
+  // KVStore API.
+  optional int64 version = 2 [deprecated = true];
+  optional int64 created_at = 3; // const
+  optional int64 modified_at = 4;
+  optional ReflectionType type = 5; // const, user defined
+  optional string dataset_id = 6; // const, user defined
+  optional string name = 7; // user defined
+  optional ReflectionDetails details = 8; // user defined
+  optional ReflectionGoalState state = 9 [default = ENABLED];
+  optional string tag = 10;
+  optional bool arrowCachingEnabled = 11 [default = false, deprecated = true];
+  optional bool is_dremio_managed = 12 [default = false];
+}
+
+message ReflectionDetails {
+  repeated ReflectionPartitionField partitionField = 1;
+  repeated ReflectionField sortField = 2;
+  repeated ReflectionDimensionField dimensionField = 3;
+  repeated ReflectionMeasureField measureField = 4;
+  repeated ReflectionField displayField = 5;
+  repeated ReflectionField distributionField = 6;
+  optional PartitionDistributionStrategy partitionDistributionStrategy = 7 [default = CONSOLIDATED];
+}
+
+message ReflectionMeasureField {
+  // field name
+  required string name = 1;
+  repeated MeasureType measure_type = 2;
+}
+
+message ReflectionField {
+  // field name
+  required string name = 1;
+}
+
+message ReflectionDimensionField {
+  // field name
+  required string name = 1;
+  // granularity
+  optional DimensionGranularity granularity = 2 [default = DATE];
+}
+
+message BucketTransform{
+  optional int32 bucketCount = 1;
+}
+message TruncateTransform{
+  optional int32 truncateLength = 1;
+}
+message Transform{
+  enum Type {
+    IDENTITY = 0;
+    YEAR = 1;
+    MONTH = 2;
+    DAY = 3;
+    HOUR = 4;
+    BUCKET = 5;
+    TRUNCATE = 6;
+  }
+  optional Type type = 1;
+  optional BucketTransform bucketTransform = 2;
+  optional TruncateTransform truncateTransform = 3;
+}
+message ReflectionPartitionField {
+  required string name = 1;
+  optional Transform transform = 2;
+}

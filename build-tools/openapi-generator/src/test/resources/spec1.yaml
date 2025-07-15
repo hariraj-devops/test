@@ -1,0 +1,446 @@
+#
+# Copyright (C) 2017-2019 Dremio Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+openapi: 3.1.0
+info:
+  title: Test API
+  version: v4
+  description: |-
+    Test spec.
+  x-dremio:
+    # Proto package.
+    protoPackage: com.dremio.test.api
+    # Package for the Java classes generated from protos.
+    javaPackage: com.dremio.test.api
+    # Java class with all generated Java protos.
+    javaOuterClass: TestApiProto
+    # Package for the Java class with REST methods.
+    javaResourcePackage: com.dremio.test.dac.api
+    # REST resource interface name, "Impl" is added for implementation class.
+    javaResourceClass: RestResource
+    secured: true
+    rolesAllowed: {'user', 'admin' }
+
+servers:
+  - url: "api/v4"
+
+paths:
+  /tests/{path}/{otherPath}:
+    get:
+      description: |
+        Test GET.
+      parameters:
+        - $ref: '#/components/parameters/path'
+        - $ref: '#/components/parameters/otherPath'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBody'
+  /tests/{path}:
+    get:
+      description: |
+        Test another GET with the same path param name in reference.
+      parameters:
+        - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBody'
+  /tests/with-in-param/{id}/{offset}:
+    get:
+      description: |
+        Test GET with in parameters.
+      operationId: WithInParam
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: |
+            Id string parameter.
+        - in: path
+          name: offset
+          schema:
+            type: number
+            format: int32
+          required: true
+          description: |
+            Offset int parameter.
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBody'
+  /tests/with-in-repeated-param/{id}:
+    get:
+      description: |
+        Test GET with in repeated parameters.
+      operationId: withInRepeatedParam
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: |
+            Id string repeated parameter.
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBody'
+  /tests:
+    get:
+      description: Get without parameters.
+      operationId: list
+      responses:
+        '200':
+          $ref: '#/components/responses/TestResponse'
+    put:
+      description: |
+        Test PUT and reference to response.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/TestResponse'
+
+    post:
+      description: |
+        Test POST.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBody'
+      parameters:
+        - in: query
+          name: filter
+          required: false
+          schema:
+            type: string
+          description: |
+            A Common Expression Language (CEL) expression. An intro to CEL can be found at
+            https://github.com/google/cel-spec/blob/master/doc/intro.md.
+      responses:
+        '201':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBody'
+
+  /tests/post-chunked:
+    post:
+      description: |
+        Test POST with streaming.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBody'
+      responses:
+        '200':
+          description: "Success."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostChunked'
+
+components:
+  responses:
+    TestResponse:
+      description: "Success 200."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseContent'
+
+  parameters:
+    path:
+      in: path
+      name: path
+      schema:
+        type: string
+      required: true
+      description: |
+        Path parameter.
+    otherPath:
+      in: path
+      name: otherPath
+      schema:
+        type: number
+        format: int32
+      required: true
+      description: |
+        Other path parameter.
+
+  schemas:
+    OneOf:
+      description: |
+        Test oneof message with field expansion for references
+      oneOf:
+        - $ref: '#/components/schemas/StringChoice'
+        - $ref: '#/components/schemas/IntChoice'
+        - $ref: '#/components/schemas/IntChoiceWrapper'
+
+    StringChoice:
+      type: object
+      description: String choice
+      properties:
+        string_value:
+          type: string
+          pattern: "[0-9]+"
+
+    IntChoice:
+      type: object
+      description: Int choice
+      properties:
+        int_value:
+          type: number
+          format: int32
+
+    IntChoiceWrapper:
+      type: object
+      description: Int choice wrapper, won't exist as a message
+      properties:
+        another_int_value:
+          type: number
+          format: int32
+
+    Enum:
+      type: string
+      enum: [ABC, CDE]
+      description: |
+        Multi-line enum description to test
+        comments for enums.
+      x-enum-descriptions:
+        - First enum value.
+        - Second enum value
+
+    EnumOneOf:
+      description: |
+        Enum can be defined with const fields io oneOf.
+      oneOf:
+        - const: ABC1
+          title: ABC1 description
+        - const: DEF1
+          title: DEF1 description
+
+    EnumArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Enum'
+
+    GetBody:
+      type: object
+      description: |
+        GET response body.
+      properties:
+        enum_value:
+          $ref: '#/components/schemas/Enum'
+        intValue1:
+          type: number
+          format: int32
+          minimum: 10
+          maximum: 20
+          description: |
+            Int value.
+        longValue:
+          type: number
+          description: |
+            Long value.
+        stringValue1:
+          type: string
+          description: |
+            String value.
+        email:
+          type: string
+          format: email
+          description: |
+            Email value.
+        floatValue:
+          type: number
+          format: float
+          description: |
+            Float value.
+        doubleValue:
+          type: number
+          format: double
+          description: |
+            Double value.
+        timestampValue:
+          type: string
+          format: date-time
+          description: |
+            Timestamp value.
+        durationValue:
+          type: string
+          format: duration
+          description: |
+            Duration value.
+        stringList:
+          type: array
+          description: |
+            String list.
+          items:
+            type: string
+        inlineOneof:
+          description: Inline oneof.
+          oneOf:
+            - $ref: '#/components/schemas/StringChoice'
+            - $ref: '#/components/schemas/IntChoice'
+        enumOneof:
+          description: Oneof of consts works as a enum.
+          oneOf:
+            - const: VALUE1
+              title: Value1 description.
+            - const: VALUE2
+              title: Value2 description.
+      required:
+        - stringValue
+        - intValue
+
+    StringArray:
+      type: array
+      description: Alias for a string array.
+      items:
+        type: string
+
+    GetBodyArray:
+      type: array
+      description: Alias for an array.
+      items:
+        $ref: '#/components/schemas/GetBody'
+
+    PostBody:
+      type: object
+      description: |
+        Post response body.
+      properties:
+        floatList:
+          type: array
+          description: |
+            Float list.
+          items:
+            type: number
+            format: float
+
+    PostChunked:
+      type: array
+      description: |
+        Declare array to indicate streamed response
+      items:
+        $ref: '#/components/schemas/PostChunk'
+
+    PostChunk:
+      type: object
+      description: |
+        Chunk of the post response.
+      properties:
+        text:
+          type: string
+
+    ResponseContent:
+      type: object
+      description: Response content
+      properties:
+        name:
+          type: string
+
+    RuntimeProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          properties:
+            cause:
+              type: string
+              description: Runtime problem cause
+          required:
+            - type
+            - cause
+
+    Problem:
+      description: An RFC 9457 problem object
+      type: object
+      discriminator:
+        mapping:
+          ABC1: '#/components/schemas/ValidationProblem'
+          DEF1: '#/components/schemas/RuntimeProblem'
+        propertyName: type
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          description: A URI reference that identifies the problem type
+          examples:
+            - "https://api.dremio.dev/problems/auth/token-invalid"
+        status:
+          type: integer
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          minimum: 100
+          maximum: 599
+        title:
+          type: string
+          description: A human-readable summary of the problem type
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        pointer:
+          type: string
+          description: A JSON pointer to locate the problem within the request's content
+          format: relative-json-pointer
+      required:
+        - type
+        - pointer
+
+    ValidationProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          properties:
+            errors:
+              type: array
+              description: An extension containing multiple validation or request errors
+              items:
+                $ref: "#/components/schemas/Error"
+          required:
+            - type
+            - errors

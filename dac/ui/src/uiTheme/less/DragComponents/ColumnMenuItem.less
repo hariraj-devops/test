@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import "~#oss/uiTheme/less/variables.less";
+@import "~#oss/uiTheme/less/mixins.less";
+
+:global {
+  .column-draggable-icon {
+    display: none;
+    top: -12px;
+    right: 0;
+    position: absolute;
+    visibility: hidden;
+  }
+  .draggable-row:hover .column-draggable-icon {
+    visibility: visible;
+  }
+
+  .column-draggable-icon--static {
+    display: none;
+    top: -12px;
+    right: 0;
+    position: absolute;
+    visibility: visible;
+  }
+
+  .draggable-row:hover .column-draggable-icon--static {
+    visibility: hidden;
+  }
+}
+
+.base {
+  min-height: 32px;
+}
+
+.itemContainer {
+  overflow: hidden;
+  width: 100%;
+}
+
+.content {
+  composes: table-row from "~#oss/uiTheme/less/forms.less";
+  position: relative;
+  border: 1px solid transparent;
+  min-height: 32px;
+  height: inherit;
+  margin-left: 24px;
+  margin-right: 5px;
+  width: calc(100% - 29px);
+  overflow: hidden;
+
+  &.--panel {
+    width: 100%;
+  }
+
+  &:hover {
+    background: var(--fill--primary--hover);
+    border-radius: 4px;
+
+    .dataset-add {
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
+}
+
+.dataset-add {
+  color: var(--icon--primary);
+  opacity: 0;
+  transition: 300ms ease all;
+
+  &:hover {
+    color: var(--icon--hover);
+  }
+}
+
+.disabled {
+  cursor: default;
+
+  &:hover {
+    background-color: transparent;
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+.iconInDropdown {
+  width: 24px;
+  height: 24px;
+  margin-left: 5px;
+  color: var(--icon--primary);
+}
+
+.icon {
+  width: 24x;
+  height: 24px;
+  margin-left: 5px;
+  color: var(--icon--primary);
+}

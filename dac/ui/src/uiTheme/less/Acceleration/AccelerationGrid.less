@@ -1,0 +1,286 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "~#oss/uiTheme/less/variables.less";
+
+:global {
+  // DX-11429 TODO reafactor component to use css modules instead fo global classes
+  .grid-acceleration {
+    padding: 10px;
+    border-left: 1px solid var(--border--neutral);
+    border-right: 1px solid var(--border--neutral);
+    border-bottom: 1px solid var(--border--neutral);
+
+    .subCell {
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        background-color: hsl(199; 80%; 92%);
+      }
+    }
+
+    .--disabled {
+      text-align: center;
+      cursor: default;
+    }
+
+    .public_fixedDataTableRow_even {
+      background-color: var(--fill--primary);
+    }
+    .public_fixedDataTableRow_odd {
+      background-color: var(--fill--secondary);
+    }
+    .public_Scrollbar_main {
+      background-color: var(--fill--primary);
+      border-color: var(--border--neutral);
+    }
+    .public_fixedDataTable_scrollbarSpacer {
+      background: transparent;
+    }
+    .fixedDataTableRowLayout_body {
+      background: var(--fill--primary);
+    }
+
+    .fixedDataTableRowLayout_main.public_fixedDataTableRow_main.fixedDataTableLayout_header.public_fixedDataTable_header
+      .fixedDataTableCellGroupLayout_cellGroupWrapper:nth-child(2)
+      .fixedDataTableCellGroupLayout_cellGroup {
+      border-bottom: 1px solid var(--border--neutral);
+    }
+
+    .fixedDataTableLayout_rowsContainer,
+    .public_fixedDataTable_header,
+    .public_fixedDataTable_header,
+    .public_fixedDataTableCell_main,
+    .fixedDataTableCellGroupLayout_cellGroupWrapper {
+      border-color: var(--border--neutral);
+      background: transparent; // hide the content sliding underneath
+    }
+
+    .fixedDataTableLayout_main.public_fixedDataTable_main {
+      margin-left: 0;
+      margin-right: 0;
+      border: 0;
+      // use !important because fixed-data-table classes already have z-index. we need this for custom style
+      z-index: 0 !important;
+
+      input::placeholder {
+        color: var(--text--placeholder) !important;
+      }
+    }
+
+    .fixedDataTableCellLayout_main {
+      border-width: 0;
+      border-right-style: none;
+    }
+
+    .fixedDataTableLayout_hasBottomBorder {
+      border-bottom-style: none;
+      border-bottom-width: 0;
+    }
+
+    .fixedDataTableRowLayout_fixedColumnsDivider {
+      border-width: 0;
+    }
+
+    // DX-48112 - Fix to remove column shadows overlap in Raw Reflections
+    .fixedDataTableLayout_header > div:nth-child(1) > div:nth-child(3) {
+      top: 28px;
+      position: relative;
+    }
+  }
+
+  .AccelerationGrid {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &__cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: @row-height;
+      width: 100%;
+      border-bottom: 1px solid var(--border--neutral);
+      border-right: 1px solid var(--border--neutral);
+    }
+
+    &__column {
+      display: flex;
+      align-items: center;
+      margin-left: 4px;
+      width: 100%;
+    }
+
+    &__disabledSearchField {
+      background-color: var(--fill--primary);
+    }
+
+    &__enabledSearchField {
+      background-color: var(--fill--brand);
+    }
+
+    &__fields {
+      height: @row-height;
+      display: flex;
+      justify-content: flex-start;
+      padding-left: 10px;
+      align-items: center;
+      border-right: 1px solid var(--border--neutral);
+      border-left: 1px solid var(--border--neutral);
+    }
+
+    &__header {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin-left: 10px;
+      border-right: 1px solid var(--border--neutral);
+      border-left: 1px solid var(--border--neutral);
+      border-top: 1px solid var(--border--neutral);
+    }
+
+    &__input {
+      border-radius: 0;
+      border: 1px solid var(--border--neutral);
+    }
+
+    &__lastCell {
+      // &:extend(.AccelerationGrid__cell) DX-34369: why won't extend work?
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: @row-height;
+      width: 100%;
+      border-bottom: 1px solid var(--border--neutral);
+    }
+
+    &__layoutDescriptionLine {
+      height: 40px;
+      border-bottom: 1px solid var(--border--neutral);
+    }
+
+    &__layoutHeaderRecommendationButton,
+    &__layoutHeaderRefeshButton,
+    &__layoutHeaderDeleteButton,
+    &__layoutHeaderSettingsButton {
+      height: 32px;
+      width: 32px;
+      color: var(--icon--primary) !important;
+
+      &:hover {
+        color: var(--icon--hover) !important;
+      }
+
+      &__layoutHeaderRefeshButton.--disabled {
+        color: var(--text--disabled) !important;
+      }
+    }
+
+    &__layoutHeaderRecommendationSpinner {
+      --dremio--spinner--size: 24px;
+    }
+
+    &__layoutHeaderRecommendationButton {
+      color: #ff981b !important;
+
+      &:hover {
+        color: #ff981b !important;
+      }
+    }
+
+    &__layoutHeaderSettingsButton {
+      margin-right: var(--dremio--spacing--1);
+    }
+
+    &__layoutMessage {
+      font-family: @acceleration_font;
+      font-weight: 400;
+      font-size: 13;
+      color: var(--text--faded);
+      width: 100%;
+      flex-grow: 1;
+      padding: 0 5px;
+    }
+
+    &__leftCell {
+      font-family: @acceleration_font;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--text--faded);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: @row-height;
+      padding: 0 5px;
+      border-right: 1px solid var(--border--neutral);
+      border-left: 1px solid var(--border--neutral);
+    }
+
+    &__leftHeader {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    &__message {
+      max-height: @row-max-height;
+    }
+
+    &__prevalidatedFieldRec {
+      &.--with-padding {
+        margin-inline-end: var(--dremio--spacing--1);
+      }
+      width: 100%;
+    }
+
+    &__status {
+      height: @row-height;
+      border-bottom: 1px solid var(--border--neutral);
+      display: flex;
+      align-items: center;
+      position: relative; // for absolute Message
+      font-weight: normal;
+    }
+
+    &__subCellHeader {
+      font-family: @acceleration_font;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--text--faded);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 32px;
+    }
+
+    &__toggle {
+      width: auto;
+      margin: 0 2px 2px;
+    }
+
+    &__toggleFiller {
+      height: 38px;
+      width: 8px;
+    }
+
+    &__togglesContainer {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

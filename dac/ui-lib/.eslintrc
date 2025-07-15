@@ -1,0 +1,65 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018,
+    "ecmaFeatures": {
+      "jsx": true,
+      "legacyDecorators": true
+    }
+  },
+
+  "rules": {
+    "no-prototype-builtins": "error",
+    "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "react/no-children-prop": "error",
+    "no-case-declarations": "warn",
+    "react/jsx-key": "warn",
+    "react/no-deprecated": "warn",
+    "no-constant-condition": "warn",
+    "react/jsx-no-target-blank": "error",
+    "prefer-const": "error",
+    "no-extra-boolean-cast": "warn",
+    "react/no-string-refs": "error",
+    "react/no-find-dom-node": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "react/no-unescaped-entities": "error",
+    "@typescript-eslint/ban-types": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "react/no-unknown-property": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "globals": {
+    "expect": false
+  }
+}

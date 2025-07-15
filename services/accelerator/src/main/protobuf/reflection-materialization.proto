@@ -1,0 +1,167 @@
+/*
+ * Copyright (C) 2017-2019 Dremio Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.dremio.service.reflection.proto;
+
+import "updateid.proto";
+import "job.proto";
+import "dataset.proto";
+import "reflection-common.proto";
+
+option java_package = "com.dremio.service.reflection.proto";
+option optimize_for = SPEED;
+
+option java_outer_classname = "ReflectionMaterializationProtobuf";
+
+// messages used by reflection service
+
+message MaterializationId {
+  required string id = 1;
+}
+
+message Materialization {
+  optional MaterializationId id = 1;
+  optional int64 version = 2 [deprecated = true];
+  optional int64 created_at = 3;
+  optional int64 modified_at = 4;
+  optional ReflectionId reflection_id = 5;
+  optional MaterializationState state = 6 [default = RUNNING];
+  optional int64 expiration = 12; // should be computed
+  optional int64 last_refresh_from_pds = 14;
+  optional bytes logical_plan = 15 [deprecated = true];
+  optional int64 logical_plan_stripped_hash = 26 [deprecated = true];
+  optional int64 legacy_reflection_goal_version = 17;
+  optional JoinAnalysis join_analysis = 18;
+  optional Failure failure = 13; // failure details set if state is failed
+
+  optional int64 series_id = 23;
+  repeated DataPartition partition = 8 [deprecated = true]; // nodes containing materialized data
+  optional int64 init_refresh_submit = 19;
+  optional int64 init_refresh_execution = 20;
+  optional string init_refresh_job_id = 21;
+  optional int32 seriesOrdinal = 22 [default = 0];
+  optional string tag = 24;
+  optional string reflectionGoalVersion = 25;
+  optional bool arrowCachingEnabled = 27 [default = false, deprecated = true]; // true if boost columns are enabled for caching
+  optional ReflectionGoalHash reflection_goal_hash = 28;
+  optional string base_path = 29;
+  optional bool is_iceberg_dataset = 30 [default = true];
+  optional bool force_full_refresh = 31;
+  optional int32 strip_version = 32;
+  optional int64 previous_iceberg_snapshot = 33;
+  optional int64 last_refresh_finished = 34;
+  optional int64 last_refresh_duration_millis = 35;
+  repeated string primary_key = 36;
+  optional bool disable_default_reflection = 37 [default = false];
+  optional bool is_noop_refresh = 38 [default = false]; // true if refresh job that created it was a noop
+  optional bool is_stale = 39 [default = false];
+}
+
+message RefreshId {
+  required string id = 1;
+}
+
+message Refresh {
+  optional RefreshId id = 1;
+  optional ReflectionId reflection_id = 2;
+  optional int64 series_id = 3;
+  optional int64 created_at = 4;
+  optional int64 modified_at = 5;
+  optional string path = 6;
+  optional JobDetails job = 7;
+  optional MaterializationMetrics metrics = 8;
+  optional int64 legacy_update_id = 9 [deprecated = true];
+  repeated DataPartition partition = 10 [deprecated = true]; // nodes containing materialized data
+  optional int32 seriesOrdinal = 11 [default = 0]; // refresh order in its series, 0 for initial refresh
+  optional bool compacted = 12 [default = false]; // true if this refresh is the result of a compaction
+  optional UpdateId update_id = 13;
+  optional bool is_iceberg_refresh = 14 [default = true];
+  optional string base_path = 15;
+}
+
+message MaterializationPlanId {
+  required string id = 1;
+}
+
+message MaterializationPlan {
+  required MaterializationPlanId id = 1;
+  required MaterializationId materialization_id = 2;
+  required ReflectionId reflection_id = 3;
+  required string version = 4;
+  required bytes logical_plan = 5;
+  required int64 created_at = 6;
+  required int64 modified_at = 7;
+  optional string tag = 8;
+  optional string matching_hash = 9;
+  optional bytes hash_fragment = 10;
+}
+
+// materialization job details
+message JobDetails {
+  optional string job_id = 1;
+  optional int64 job_start = 2;
+  optional int64 job_end = 3;
+  optional int64 input_bytes = 4;
+  optional int64 input_records = 5;
+  optional int64 output_bytes = 6;
+  optional int64 output_records = 7;
+}
+
+message RefreshDecision {
+  optional bool initial_refresh = 1;
+  // For incremental refresh, the update_id info copied from last refresh and to be used in plan generation.
+  optional UpdateId update_id = 2;
+  optional int64 series_id = 3;
+  optional com.dremio.service.namespace.dataset.proto.AccelerationSettings acceleration_settings = 4;
+  optional int32 dataset_hash = 5;
+  optional bytes logical_plan = 6 [deprecated = true];
+  optional int64 logical_plan_stripped_hash = 9;
+  repeated ScanPath scan_paths = 7;
+  optional int32 series_ordinal = 8 [default = 0];
+  // For incremental refresh, the update_id info determined during planning time and to be saved into refresh entry
+  // when refresh is done.
+  // - For MTime/Field based incremental, this is empty (not used). When refresh is done the update_id info is extracted
+  //   from query result.
+  // - For snapshot based incremental, this is used to preserve the base table snapshot id info. When refresh is done
+  //   it's saved into refresh entry directly.
+  optional UpdateId output_update_id = 10;
+  optional bool no_op_refresh = 11 [default = false];
+  optional bool disable_default_reflection = 12 [default = false];
+}
+
+// data partition host address
+message DataPartition {
+  required string address = 1 [deprecated = true];
+}
+
+// details about materialization
+message MaterializationMetrics {
+  // how many bytes does
+  required int64 footprint = 1 [default = 0];
+  // original query cost of running view definition
+  required double original_cost = 2 [default = 1.0];
+  optional int32 num_files = 3 [default = 0];
+  optional int64 median_file_size = 4 [default = 0];
+}
+
+message JoinDependencyProperties {
+  message Dependency {
+    repeated string foreign_key_table = 1;
+    repeated string unique_key_table = 2;
+  }
+
+  repeated Dependency dependency = 1;
+}
+

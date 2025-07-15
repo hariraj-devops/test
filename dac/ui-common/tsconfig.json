@@ -1,0 +1,19 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "incremental": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "ES2019"],
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "preserveSymlinks": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2019",
+    "tsBuildInfoFile": "./.cache/src.tsbuildinfo"
+  }
+}
