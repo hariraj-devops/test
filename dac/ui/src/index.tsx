@@ -77,7 +77,7 @@ browserHistory.listen((location) => {
     "*"
   );
 });
-
+console.log("changes are again done");
 /**
  * We need to work on finding all of the places that jquery is
  * implicitly used from the window instead of explicitly through an import and

@@ -1,4 +1,4 @@
-//
+  //
 // Copyright (C) 2017-2019 Dremio Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,15 +90,19 @@ export class LoginForm extends PureComponent {
   console.log("✅ Allowed message from:", event.origin);
   console.log("Received data:", event.data);
  
-  const { username, password } = event.data;
+  const { username, password, logout } = event.data;
  
   if (username && password) {
     this.submit({
       userName: username,
       password: password,
     });
+  } else if (logout === true) {
+    localStorage.clear();
   }
   };
+
+
   componentDidMount() {
     console.log("event started");
     window.addEventListener("message", this.handleMessage);

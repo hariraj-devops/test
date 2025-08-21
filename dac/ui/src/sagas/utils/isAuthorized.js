@@ -35,11 +35,19 @@ import { log } from "#oss/utils/logger";
 import { checkUser, CHECK_USER_SUCCESS } from "#oss/actions/account";
 
 export function* isAuthorized() {
+  if (window.location.pathname === "/login") {
+    log("Skipping checkUser() because path is /login");
+    return false;
+  }
+
   log("send request to the server to check is a user authorized");
+  
   const promise = yield put(checkUser());
 
   // wait for response
   const action = yield promise;
   log("response action", action);
+  console.log("isAuthorized failed")
   return action.type === CHECK_USER_SUCCESS;
+
 }

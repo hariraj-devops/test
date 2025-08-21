@@ -31,12 +31,7 @@
   <description>See README.md</description>
 
   <modules>
-    <module>backend</module>
-    <module>common</module>
-    <module>daemon</module>
     <module>ui</module>
-    <module>ui-common</module>
-    <module>ui-lib</module>
   </modules>
 
   <dependencies/>

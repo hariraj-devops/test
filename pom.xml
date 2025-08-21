@@ -30,20 +30,6 @@
   <inceptionYear>2017-2019</inceptionYear>
 
   <modules>
-    <module>build-tools</module>
-    <module>client</module>
-    <module>common</module>
-    <module>connector</module>
-    <module>contrib</module>
-    <module>dac</module>
-    <module>distribution</module>
-    <module>plugins</module>
-    <module>protocol</module>
-    <module>provision</module>
-    <module>sabot</module>
-    <module>sample-data</module>
-    <module>services</module>
-    <module>tools</module>
     <module>ui</module>
   </modules>
 
